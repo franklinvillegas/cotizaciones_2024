@@ -27,3 +27,6 @@ chmod -R 775 storage
 
 npm install
 
+php artisan serve
+npm run dev
+
