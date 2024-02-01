@@ -6,7 +6,7 @@ export default {
                 localStorage.setItem("auth_token", response.data.token);
                 axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("auth_token");
                 toastr["success"](response.data.message);
-                _this.$router.push("/inicio");
+                _this.$router.push("admin/inicio");
                 return true;
             })
             .catch((error) => {

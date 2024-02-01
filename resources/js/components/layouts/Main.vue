@@ -57,31 +57,34 @@ export default {
     methods:{
         init(){
             if(!this.$store.getters.getAuthUser('identificador')){
-                axios.get("api/auth/user")
-                .then((response) => {
-                    console.log(response);
-                    let usuario = response.data;
-                    // if(usuario.es_admin==false){
+                console.log('no está autenticado');
+                // axios.get("api/auth/user")
+                // .then((response) => {
+                //     console.log(response);
+                //     let usuario = response.data;
+                //     // if(usuario.es_admin==false){
                 
-                    // }
-                    this.$store.dispatch('setAuthUserDetail',{//aqui extrae la info el usuario y lo asigno a la variable
-                        identificador: Crypt.encrypt(usuario.id),
-                        //rol: Crypt.encrypt(usuario.id_rol),
-                        email: usuario.email,
-                        nombres: usuario.persona.nombres,
-                        apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
-                        usuario: usuario.usuario,
-                        avatar: usuario.avatar,
-                        rol: usuario.tipo_usuario
-                    });
+                //     // }
+                //     this.$store.dispatch('setAuthUserDetail',{//aqui extrae la info el usuario y lo asigno a la variable
+                //         identificador: Crypt.encrypt(usuario.id),
+                //         //rol: Crypt.encrypt(usuario.id_rol),
+                //         email: usuario.email,
+                //         nombres: usuario.persona.nombres,
+                //         apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
+                //         usuario: usuario.usuario,
+                //         avatar: usuario.avatar,
+                //         rol: usuario.tipo_usuario
+                //     });
 
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toastr.e(error.response.data.message);
-                    this.cerrarSesion();
-                    return false;
-                });
+                // })
+                // .catch((error) => {
+                //     console.log(error);
+                //     this.$toastr.e(error.response.data.message);
+                //     this.cerrarSesion();
+                //     return false;
+                // });
+            } else {
+                console.log('está autenticado');
             }
         },
         validarPermisos(rol){

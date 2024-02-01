@@ -57,7 +57,6 @@ let routes = [
 
     {
         path: '/',
-        meta: { requiresAuthAdmin: true },
         component: Main,
         redirect: '/inicio',
         children: [
