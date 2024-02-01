@@ -8,7 +8,7 @@
       >
         Nuevo
       </button>
-      <h4 class="text-color-2 mb-3">Mantenimiento de Grados</h4>
+      <h4 class="text-color-2 mb-3">Enviar para cotizaciones</h4>
     </div>
     <br />
     <!--  <div class="row justify-content-md-center">

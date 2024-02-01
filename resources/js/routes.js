@@ -19,10 +19,10 @@ import InformacionDocente from './components/admin/InformacionDocente';
 
 
 ///Gestion
-import Nivel from './components/admin/Nivel';
-import Grado from './components/admin/Grado';
-import Curso from './components/admin/Curso';
-import Actividad from './components/admin/Actividad';
+import RequerimientoSIGA from './components/admin/RequerimientoSIGA';
+import EnviarCotizacion from './components/admin/EnviarCotizacion';
+import RevisarCotizacion from './components/admin/RevisarCotizacion';
+import CuadroComparativo from './components/admin/CuadroComparativo';
 import Datos from './components/admin/Datos';
 import Matricula from './components/admin/Matricula';
 import Notas from './components/admin/Notas';
@@ -74,10 +74,10 @@ let routes = [
             { path: 'inicio', name: 'InicioAdmin', component: InicioAdmin },
             { path: 'usuarios', name: 'Usuarios', component: Usuarios },
             // { path: 'mensajes/:usuario_id/:nombre', name: 'Mensajes', component: Mensajes },
-            { path: 'nivel', name: 'Nivel', component: Nivel },
-            { path: 'grado', name: 'Grado', component: Grado },
-            { path: 'curso', name: 'Curso', component: Curso },
-            { path: 'competencia', name: 'Actividad', component: Actividad },
+            { path: 'requerimientoSIGA', name: 'RequerimientoSIGA', component: RequerimientoSIGA },
+            { path: 'enviarCotizacion', name: 'EnviarCotizacion', component: EnviarCotizacion },
+            { path: 'revisarCotizacion', name: 'RevisarCotizacion', component: RevisarCotizacion },
+            { path: 'CuadroComparativo', name: 'CuadroComparativo', component: CuadroComparativo },
         ]
     },
     
