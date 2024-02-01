@@ -1,7 +1,7 @@
 <template>
     <div class="p-3 pt-5">
          <div class="col-md-12" style="margin-left: -15px;"><button class="btn btn-outline-secondary float-right"  type="button" @click="nuevo"> Nuevo </button>
-        <h4 class="text-color-2 mb-3">Mantenimiento de Nivel Educativo</h4></div>
+        <h4 class="text-color-2 mb-3">Requerimientos SIGA</h4></div>
         <br>
         <!--  <div class="row justify-content-md-center">
            <div class="col-md-5">

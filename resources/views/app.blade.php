@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" value="{{ csrf_token() }}" />
 
-    <title>IE. Santa Rosa</title>
+    <title>Cotizaciones Sub Region Chanka</title>
 
     <link href="{{ asset(mix('css/app.css')) }}?v1.2" type="text/css" rel="stylesheet" />
 

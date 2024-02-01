@@ -42,7 +42,7 @@
                             <div class="card-header p-0" id="headingOne">
                                 <h6 class="mb-0">
                                     <button class="btn btn-light w-100 text-left font-weight-bold p-menu" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="font-size:20px;">
-                                        <i class="fa fa-indent w-ico me-3"></i>Gestión educativa
+                                        <i class="fa fa-indent w-ico me-3"></i>COTIZACIONES
                                     </button>
                                 </h6>
                             </div>
@@ -56,31 +56,25 @@
                                     </li> -->
                                     
                                     <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Nivel')">
-                                            <i class="fas fa-tag me-3"></i>Nivel
+                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('RequerimientoSIGA')">
+                                            <i class="fas fa-tag me-3"></i>Requerimientos SIGA
                                         </a>
                                     </li>
                                     <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Grado')">
-                                            <i class="fas fa-tag me-3"></i>Grado
+                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('EnviarCotizacion')">
+                                            <i class="fas fa-tag me-3"></i>Enviar para cotización
                                         </a>
                                     </li>
                                     <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Seccion')">
-                                            <i class="fas fa-tag me-3"></i>Sección
+                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('RevisarCotizacion')">
+                                            <i class="fas fa-tag me-3"></i>Revisar cotización
                                         </a>
                                     </li>
                                     <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Curso')">
-                                            <i class="fas fa-tag me-3"></i>Cursos
+                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('CuadroComparativo')">
+                                            <i class="fas fa-tag me-3"></i>Cuadro comparativo
                                         </a>
                                     </li>
-                                   <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Actividad')">
-                                            <i class="fas fa-tag me-3"></i>Competencias
-                                        </a>
-                                    </li>
-
                                 </ul>
                             </div>
                         </div>
@@ -88,7 +82,7 @@
                             <div class="card-header p-0" id="headingTwo">
                                 <h6 class="mb-0">
                                     <button class="btn btn-light w-100 text-left font-weight-bold p-menu" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="font-size:20px;">
-                                        <i class="fa fa-lock w-ico me-3"></i>Accesos
+                                        <i class="fa fa-lock w-ico me-3"></i>Proveedores
                                     </button>
                                 </h6>
                             </div>
