@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class PedidoSiga extends Model
+{
+    use HasFactory;
+    protected $table = 'documento_identidad';
+    protected $fillable = [
+      'tipo',
+      'nro_pedido',
+      'descripcion',
+      'consolidado',
+      'codigo_ejecutora',
+      'fecha_pedido',
+      'ano_eje',
+      'estado',       
+    ];
+}

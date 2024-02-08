@@ -8,6 +8,7 @@ use App\Http\Controllers\UsuarioController;
 
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\DocumentoController;
+use App\Http\Controllers\PedidoSigaController;
 
 
 
@@ -79,6 +80,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('rubros_criterio', [PersonaController::class, 'listarRubrosCriterio']);
     Route::get('listar_temas', [PersonaController::class, 'listarTemasCriterio']);
 
+  });
+
+  //Pedido SIGA
+  Route::group(['prefix' => 'pedidoSiga'], function () {
+    Route::get('listar', [PedidoSigaController::class, 'listar']);
   });
   //extrasss
   Route::group(['prefix' => 'documento'], function () {

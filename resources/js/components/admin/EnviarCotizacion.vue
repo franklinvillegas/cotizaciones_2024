@@ -15,7 +15,7 @@
            <div class="col-md-5">
                 <div class="form-group">
                     <label for="">Tipo</label>
-                    <select name="" class="form-control" v-model="listarGrados.filtrosBusqueda.tipo" @change="listarGrado" >
+                    <select name="" class="form-control" v-model="listarPedidos.filtrosBusqueda.tipo" @change="listarGrado" >
                         <option value="">-- Todos -- </option>
                         <option value="1">Inicio</option>
                         <option value="2">Pregunta</option>
@@ -34,8 +34,8 @@
         <br> -->
     <div class="table-responsive">
       <vue-good-table
-        :columns="listarGrados.columns"
-        :rows="listarGrados.data"
+        :columns="listarPedidos.columns"
+        :rows="listarPedidos.data"
         :search-options="{
           enabled: true,
           placeholder: 'Buscar en la tabla',
@@ -368,12 +368,14 @@ export default {
   components: {},
   data() {
     return {
-      listarGrados: {
+      listarPedidos: {
         data: [],
         columns: [
-          { label: "Grado", field: "grado" },
-          { label: "Nivel", field: "nivel.nombre" },
-          { label: "Opciones", field: "options" },
+          { label: "ID", field: "id" },
+          { label: "Pedido", field: "nro_pedido" },
+          { label: "Descripcion", field: "descripcion" },
+          { label: "Tipo", field: "tipo" },
+          { label: "Accion", field: "options" },
         ],
         total: 0,
         filtrosBusqueda: {
@@ -432,13 +434,13 @@ export default {
     listarGrado() {
       axios
         .get(
-          "api/grado/listar" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
+          "api/pedidoSiga/listar" +
+            Helper.getFilterURL(this.listarPedidos.filtrosBusqueda)
         )
         .then((response) => {
           let data = response.data;
-          this.listarGrados.data = data;
-          console.log(this.listarGrados);
+          this.listarPedidos.data = data;
+          console.log(this.listarPedidos);
         })
         .catch((error) => {
           console.log(error);
@@ -449,7 +451,7 @@ export default {
       axios
         .get(
           "api/nivel/listar" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
+            Helper.getFilterURL(this.listarPedidos.filtrosBusqueda)
         )
         .then((response) => {
           let data = response.data;
@@ -464,7 +466,7 @@ export default {
       axios
         .get(
           "api/curso/listar" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
+            Helper.getFilterURL(this.listarPedidos.filtrosBusqueda)
         )
         .then((response) => {
           let data = response.data;
@@ -479,7 +481,7 @@ export default {
       axios
         .get(
           "api/curso/listar_primaria" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
+            Helper.getFilterURL(this.listarPedidos.filtrosBusqueda)
         )
         .then((response) => {
           let data = response.data;
@@ -494,7 +496,7 @@ export default {
       axios
         .get(
           "api/curso/listar_secundaria" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
+            Helper.getFilterURL(this.listarPedidos.filtrosBusqueda)
         )
         .then((response) => {
           let data = response.data;
@@ -680,7 +682,7 @@ export default {
         });
     },
     listarContenidoPeligroso() {
-      this.listarGrados.filtrosBusqueda.contenidoPeligroso = true;
+      this.listarPedidos.filtrosBusqueda.contenidoPeligroso = true;
       this.listarGrado();
     },
     obtenerTipo(row) {
@@ -692,7 +694,7 @@ export default {
       let url =
         process.env.MIX_APP_URL +
         "/exportar/ocupaciones" +
-        Helper.getFilterURL(this.listarGrados.filtrosBusqueda);
+        Helper.getFilterURL(this.listarPedidos.filtrosBusqueda);
       window.open(url);
     },
   },
