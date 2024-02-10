@@ -15,7 +15,7 @@
            <div class="col-md-5">
                 <div class="form-group">
                     <label for="">Tipo</label>
-                    <select name="" class="form-control" v-model="listarPedidos.filtrosBusqueda.tipo" @change="listarGrado" >
+                    <select name="" class="form-control" v-model="listarPedidos.filtrosBusqueda.tipo" @change="listarPedido" >
                         <option value="">-- Todos -- </option>
                         <option value="1">Inicio</option>
                         <option value="2">Pregunta</option>
@@ -55,45 +55,29 @@
           <span v-if="props.column.field == 'options'">
             <button
               class="btn btn-outline-success btn-sm btn-icon"
-              @click.prevent="agregarCurso(props.row, props.index)"
+              @click.prevent="impresion(props.row, props.index)"
               data-toggle="tooltip"
               title="Agregar"
             >
-              <i class="fas fa-plus"></i> Cursos
-            </button>
-            <button
-              class="btn btn-outline-secondary btn-sm btn-icon"
-              @click.prevent="ver(props.row, props.index)"
-              data-toggle="tooltip"
-              title="Ver"
-            >
-              <i class="fas fa-eye"></i>
-            </button>
-            <button
-              class="btn btn-outline-info btn-sm btn-icon"
-              @click.prevent="editar(props.row, props.index)"
-              data-toggle="tooltip"
-              title="Editar"
-            >
-              <i class="fas fa-pencil-alt"></i>
+              Impresión
             </button>
             <button
               class="btn btn-outline-danger btn-sm btn-icon"
-              @click.prevent="eliminar(props.row, props.index)"
+              @click.prevent="publicacion(props.row, props.index)"
               data-toggle="tooltip"
-              title="Eliminar"
+              title="Agregar"
             >
-              <i class="fas fa-trash-alt"></i>
+              Publicación
             </button>
           </span>
         </template>
       </vue-good-table>
     </div>
-    <!-- Modal -->
-    <template>
+    <!-- Modal Impresion -->
+    <template id="impresion">
       <div
         class="modal fade"
-        id="modal-grado"
+        id="modal-impresion"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -101,99 +85,148 @@
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5
-                class="modal-title"
-                id="exampleModalLongTitle"
-                v-text="modal.titulo"
-              ></h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form class="form" data-vv-scope="form_registro">
-                <div class="form-group">
-                  <p class="m-0">
-                    <strong>Nivel</strong>
-                  </p>
-                  <select
-                    name="nivel"
-                    class="form-control"
-                    v-model="modal.grado.id_nivel"
-                    data-vv-as="Nivel"
-                    placeholder="Seleccione Nivel"
-                    v-validate="'required'"
-                  >
-                    <option
-                      v-for="row in listarNiveles"
-                      :key="row.id"
-                      :value="row.id"
-                      v-text="row.nombre"
-                    ></option>
-                  </select>
-                  <span class="text-danger">{{
-                    errors.first("form_registro.nivel")
-                  }}</span>
-                </div>
-                <div class="form-group">
-                  <p class="m-0">
-                    <strong>Grado</strong>
-                  </p>
-                  <input
-                    type="text"
-                    v-model="modal.grado.grado"
-                    class="form-control"
-                    data-vv-as="Grado"
-                    placeholder="Grado"
-                    name="grado"
-                    v-validate="'required|max:30'"
-                  />
-                  <span class="text-danger">{{
-                    errors.first("form_registro.grado")
-                  }}</span>
-                </div>
-              </form>
+            <div id="modal-imprimir">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalImpresion.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Unidad Ejecutora: </strong>
+                        GERENCIA SUB REGIONAL CHANKA
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Nro. de Identificacion: </strong>
+                        000748
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row" style="border: 2px solid black">
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Señores: </strong>
+                      </p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>RUC: </strong>
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Dirección: </strong>
+                      </p>
+                    </div>
+                    <div class="form-group col-3">
+                      <p class="m-0">
+                        <strong>Telefono: </strong>
+                      </p>
+                    </div>
+                    <div class="form-group col-9">
+                      <p class="m-0">
+                        <strong>Fax: </strong>
+                      </p>
+                    </div>
+                    <div class="form-group col-2">
+                      <p class="m-0">
+                        <strong>Nro. Cons: </strong>
+                        <label v-text="modalImpresion.detalles.nro_cmn"></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-4">
+                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Documento Pedido: </strong> 000983
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
+                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
+                        CATASTRO
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <vue-good-table
+                      :columns="listarPedidosDetalle.columns"
+                      :rows="listarPedidosDetalle.data"
+                      :sort-options="{
+                        enabled: false,
+                      }"
+                    >
+                    </vue-good-table>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Total: </strong>
+                      </p>
+                      <hr />
+                      <p>
+                        Las cotizaciones deben estar dirigidas a la GERENCIA SUB
+                        REGIONAL CHANKA en la siguiente dirección: Jr Tupac
+                        Amaru 374 Teléfono: (083) 421745
+                      </p>
+                      <p>Condiciones de compra</p>
+                      <p class="mb-0">- Forma de Pago:</p>
+                      <p class="mb-0">- Garantía:</p>
+                      <p class="mb-0">- I.G.V.:</p>
+                      <p class="mb-0">- Plazo de entrega:</p>
+                      <p class="mb-0">- Tipo de Moneda:</p>
+                      <p class="mb-0">- Validéz de cotización:</p>
+                      <p class="mb-0">
+                        - Remitir junto con su cotización la Declaración Jurada
+                        y Pacto de Integridad, debidamente firmadas y selladas.
+                        -Indicar su razón social, domicilio fiscal y número de
+                        RUC
+                      </p>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-primary" @click="imprimir">
+                Imprimir
+              </button>
               <button
                 type="button"
                 class="btn btn-outline-primary"
                 data-dismiss="modal"
               >
                 Cerrar
-              </button>
-              <button
-                type="button"
-                v-if="modal.tipo == 'nuevo'"
-                class="btn btn-primary"
-                @click="guardar"
-              >
-                Guardar
-              </button>
-              <button
-                type="button"
-                v-else-if="modal.tipo == 'editar'"
-                class="btn btn-primary"
-                @click="modificar"
-              >
-                Actualizar
               </button>
             </div>
           </div>
         </div>
       </div>
     </template>
-    <!-- Modal agregar Cursos -->
-    <template>
+    <!-- Modal Publicacion -->
+    <template id="publicacion">
       <div
         class="modal fade"
-        id="modal-agregarCurso"
+        id="modal-publicacion"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -201,156 +234,181 @@
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5
-                class="modal-title"
-                id="exampleModalLongTitle"
-                v-text="modal.titulo"
-              ></h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form class="form" data-vv-scope="form_registro_grado_curso">
-                <div class="row">
-                  <div class="form-group col-6">
-                    <p class="m-0">
-                      <strong>Nivel</strong>
-                    </p>
-                    <select
-                      name="id_nivel"
-                      disabled
-                      class="form-control"
-                      v-model="modalAgregar.grado.id_nivel"
-                      data-vv-as="id_nivel"
-                      placeholder="Seleccione Nivel"
-                      v-validate="'required'"
+            <div id="modal-publicar">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalImpresion.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Unidad Ejecutora: </strong>
+                        GERENCIA SUB REGIONAL CHANKA
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Nro. de Identificacion: </strong>
+                        000748
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row" style="border: 2px solid black">
+                    <div class="form-group col-2">
+                      <p class="m-0"><strong>Nro. Cons: </strong> 663</p>
+                    </div>
+                    <div class="form-group col-4">
+                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Documento Pedido: </strong> 000983
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
+                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
+                        CATASTRO
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <vue-good-table
+                      :columns="listarPedidosDetalle.columns"
+                      :rows="listarPedidosDetalle.data"
+                      :sort-options="{
+                        enabled: false,
+                      }"
                     >
-                      <option
-                        v-for="row in listarNiveles"
-                        :key="row.id"
-                        :value="row.id"
-                        v-text="row.nombre"
-                      ></option>
-                    </select>
+                    </vue-good-table>
                   </div>
-                  <div class="form-group col-6">
-                    <p class="m-0">
-                      <strong>Grado</strong>
-                    </p>
-                    <input
-                      type="text"
-                      v-model="modalAgregar.grado.grado"
-                      disabled
-                      class="form-control"
-                      data-vv-as="Nombre"
-                      placeholder="Nombre"
-                      name="grado"
-                      :id="modalAgregar.grado.id"
-                      v-validate="'required'"
-                    />
+                  <br />
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Nro de Cotización: </strong>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="numCotizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Publicacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaPublicacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="horaPublicacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Finalizacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Descripción: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="descripcion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar documento: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="documento"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar EE.TT.: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="eett"
+                          v-validate="'required'"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div class="form-group col-10">
-                    <p class="m-0">
-                      <strong>Cursos</strong>
-                    </p>
-                    <select
-                      name="Curso"
-                      class="form-control"
-                      v-model="modalAgregar.grado.id_curso"
-                      data-vv-as="Curso"
-                      placeholder="Seleccione Curso"
-                      v-validate="'required'"
-                    >
-                      <option
-                        v-for="row in listarCursos"
-                        :key="row.id"
-                        :value="row.id"
-                        v-text="row.nombre"
-                      ></option>
-                    </select>
-                    <span class="text-danger">{{
-                      errors.first("form_registro_grado_curso.nivel")
-                    }}</span>
-                  </div>
-                  <div class="form-group col-2">
-                    <p class="m-0 col-12">
-                      <strong> &nbsp;</strong>
-                    </p>
-                    <button
-                      type="button"
-                      class="btn btn-success"
-                      @click="guardarAgregarCurso"
-                    >
-                      Agregar
-                    </button>
-                  </div>
-                </div>
-                <div class="table-responsive">
-                  <vue-good-table
-                    :columns="listarGradoCursos.columns"
-                    :rows="listarGradoCursos.data"
-                    :search-options="{
-                      enabled: true,
-                      placeholder: 'Buscar en la tabla',
-                    }"
-                    :pagination-options="{
-                      enabled: true,
-                      mode: 'pages',
-                      nextLabel: 'Sig',
-                      prevLabel: 'Ant',
-                      rowsPerPageLabel: 'Registros por página',
-                      ofLabel: 'de',
-                      pageLabel: 'Página', // for 'pages' mode
-                      allLabel: 'Todo',
-                    }"
-                  >
-                    <template slot="table-row" slot-scope="props">
-                      <span v-if="props.column.field == 'options'">
-
-                        <button
-                          class="btn btn-outline-danger btn-sm btn-icon"
-                          @click.prevent="eliminarGradoCurso(props.row, props.index)"
-                          data-toggle="tooltip"
-                          title="Eliminar"
-                        >
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
-                      </span>
-                    </template>
-                  </vue-good-table>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-primary" @click="imprimir">
+                Publicar
+              </button>
               <button
                 type="button"
                 class="btn btn-outline-primary"
                 data-dismiss="modal"
               >
                 Cerrar
-              </button>
-              <button
-                type="button"
-                v-if="modal.tipo == 'nuevo'"
-                class="btn btn-primary"
-                @click="guardar"
-              >
-                Guardar
-              </button>
-              <button
-                type="button"
-                v-else-if="modal.tipo == 'editar'"
-                class="btn btn-primary"
-                @click="modificar"
-              >
-                Actualizar
               </button>
             </div>
           </div>
@@ -372,7 +430,7 @@ export default {
         data: [],
         columns: [
           { label: "ID", field: "id" },
-          { label: "Pedido", field: "nro_pedido" },
+          { label: "Pedido", field: "nro_cmn" },
           { label: "Descripcion", field: "descripcion" },
           { label: "Tipo", field: "tipo" },
           { label: "Accion", field: "options" },
@@ -386,7 +444,25 @@ export default {
         },
         deshabilitarEdicion: false,
       },
-      listarGradoCursos: {
+      listarPedidosDetalle: {
+        data: [],
+        columns: [
+          { label: "Cantidad Requerida", field: "id" },
+          { label: "Unidad de Medida", field: "nro_cmn" },
+          { label: "Descripcion", field: "descripcion" },
+          { label: "Precio Unitario", field: "tipo" },
+          { label: "Precio Total", field: "options" },
+        ],
+        total: 0,
+        filtrosBusqueda: {
+          tipo: "",
+          orden: "asc",
+          ordenPor: "id",
+          regPagina: "10",
+        },
+        deshabilitarEdicion: false,
+      },
+      listarPedidoCursos: {
         data: [],
         columns: [
           { label: "Curso", field: "curso.nombre" },
@@ -406,32 +482,33 @@ export default {
       deshabilitado: false,
       modal: {
         tipo: "",
-        titulo: "",
+        titulo: "Solicitud de Cotización",
         nivelID: null,
         grado: {
           grado: "",
           id_nivel: "",
         },
       },
-      modalAgregar: {
+      modalImpresion: {
         tipo: "",
         titulo: "",
         nivelID: null,
-        grado: {
-          grado: "",
-          id_nivel: "",
-          id_curso:"",
-          cursos: [],
+        detalles: {
+          id: "",
+          nro_cmn: "",
+          descripcion: "",
+          tipo: "",
+          options: "",
         },
       },
     };
   },
   created() {
-    this.listarGrado();
+    this.listarPedido();
     this.listarNivel();
   },
   methods: {
-    listarGrado() {
+    listarPedido() {
       axios
         .get(
           "api/pedidoSiga/listar" +
@@ -507,15 +584,13 @@ export default {
           this.$toastr.e(error.response.data.message);
         });
     },
-    listarGradoCurso(id_grado) {
+    listarPedidoCurso(id_grado) {
       axios
-        .get(
-          "api/grado_curso/listar/" +id_grado
-        )
+        .get("api/grado_curso/listar/" + id_grado)
         .then((response) => {
           let data = response.data;
-          console.log("sadasd",data);
-          this.listarGradoCursos.data = data;
+          console.log("sadasd", data);
+          this.listarPedidoCursos.data = data;
         })
         .catch((error) => {
           console.log(error);
@@ -553,25 +628,39 @@ export default {
         deshabilitado: true,
       };
     },
-    agregarCurso(row, index) {
-      $("#modal-agregarCurso").modal("show");
+    impresion(row, index) {
+      $("#modal-impresion").modal("show");
       this.limpiarFormulario();
-      if (row.id_nivel == 1) this.listarCursoPrimaria();
-      else this.listarCursoSecundaria();
-      this.modalAgregar = {
-        titulo: "Ver grado y cursos",
+      console.log(row);
+      this.modalImpresion = {
+        titulo: "Solicitud de Cotización",
+        tipo: "ver",
+        detalles: {
+          id: row.id,
+          nro_cmn: row.nro_cmn,
+          descripcion: row.descripcion,
+          tipo: row.tipo,
+        },
+        deshabilitado: true,
+      };
+      this.listarPedidoCurso(row.id);
+    },
+    publicacion(row, index) {
+      $("#modal-publicacion").modal("show");
+      this.limpiarFormulario();
+      this.modalImpresion = {
+        titulo: "Publicar Cotización",
         tipo: "ver",
         grado: {
           grado: row.grado,
-          id_grado:row.id,
+          id_grado: row.id,
           id_nivel: row.id_nivel,
-          id_curso:'',
+          id_curso: "",
           cursos: [],
         },
         deshabilitado: true,
       };
-      this.listarGradoCurso(row.id);
-
+      this.listarPedidoCurso(row.id);
     },
     editar(row, index) {
       $("#modal-grado").modal("show");
@@ -595,7 +684,7 @@ export default {
             .then((response) => {
               this.$toastr.s(response.data.message);
               $("#modal-grado").modal("hide");
-              this.listarGrado();
+              this.listarPedido();
             })
             .catch((error) => {
               console.log(error);
@@ -605,20 +694,22 @@ export default {
       });
     },
     guardarAgregarCurso() {
-      this.$validator.validateAll("form_registro_grado_curso").then((result) => {
-        if (result) {
-          axios
-            .post("api/grado_curso/crear", this.modalAgregar.grado)
-            .then((response) => {
-              this.$toastr.s(response.data.message);
-              this.listarGradoCurso(this.modalAgregar.grado.id_grado);
-            })
-            .catch((error) => {
-              console.log(error);
-              this.$toastr.e(error.response.data.message);
-            });
-        }
-      });
+      this.$validator
+        .validateAll("form_registro_grado_curso")
+        .then((result) => {
+          if (result) {
+            axios
+              .post("api/grado_curso/crear", this.modalImpresion.grado)
+              .then((response) => {
+                this.$toastr.s(response.data.message);
+                this.listarPedidoCurso(this.modalImpresion.grado.id_grado);
+              })
+              .catch((error) => {
+                console.log(error);
+                this.$toastr.e(error.response.data.message);
+              });
+          }
+        });
     },
     modificar() {
       this.$validator.validateAll("form_registro").then((result) => {
@@ -628,7 +719,7 @@ export default {
             .then((response) => {
               this.$toastr.s(response.data.message);
               $("#modal-grado").modal("hide");
-              this.listarGrado();
+              this.listarPedido();
             })
             .catch((error) => {
               console.log(error);
@@ -638,37 +729,35 @@ export default {
       });
     },
     eliminar(row, index) {
-       this.$confirm("¿Esta seguro de eliminar el registro?").then(() => {
-                  //
-                   axios
-        .put("api/grado/eliminar/" + row.id)
-        .then((response) => {
-          this.$toastr.s(response.data.message);
-          row.activo = false;
-        })
-        .catch((error) => {
-          this.$toastr.e(error.response.data.message);
-        });
-      this.listarGrado();
-                });
-     
+      this.$confirm("¿Esta seguro de eliminar el registro?").then(() => {
+        //
+        axios
+          .put("api/grado/eliminar/" + row.id)
+          .then((response) => {
+            this.$toastr.s(response.data.message);
+            row.activo = false;
+          })
+          .catch((error) => {
+            this.$toastr.e(error.response.data.message);
+          });
+        this.listarPedido();
+      });
     },
-     eliminarGradoCurso(row, index) {
-        this.$confirm("¿Esta seguro de eliminar el registro?").then(() => {
-                  //
-                  axios
-        .put("api/grado_curso/eliminar/" + row.id)
-        .then((response) => {
-          this.$toastr.s(response.data.message);
-          row.activo = false;
-          this.listarGradoCurso(row.id_grado);
-        })
-        .catch((error) => {
-          this.$toastr.e(error.response.data.message);
-        });
-      this.listarGrado();
-                });
-      
+    eliminarGradoCurso(row, index) {
+      this.$confirm("¿Esta seguro de eliminar el registro?").then(() => {
+        //
+        axios
+          .put("api/grado_curso/eliminar/" + row.id)
+          .then((response) => {
+            this.$toastr.s(response.data.message);
+            row.activo = false;
+            this.listarPedidoCurso(row.id_grado);
+          })
+          .catch((error) => {
+            this.$toastr.e(error.response.data.message);
+          });
+        this.listarPedido();
+      });
     },
     activar(row, index) {
       axios
@@ -683,12 +772,23 @@ export default {
     },
     listarContenidoPeligroso() {
       this.listarPedidos.filtrosBusqueda.contenidoPeligroso = true;
-      this.listarGrado();
+      this.listarPedido();
     },
     obtenerTipo(row) {
       if (row.tipo == 1) return "Inicio";
       else if (row.tipo == 2) return "Pregunta";
       else if (row.tipo == 1) return "Publicación";
+    },
+    imprimir() {
+      let tagContainer = document.getElementById("modal-imprimir");
+      let popUp = window.open(" ", "popUp");
+      popUp.document.write(tagContainer.innerHTML);
+      popUp.document.close();
+
+      setTimeout(function () {
+        popUp.print();
+        popUp.close();
+      }, 1000);
     },
     exportar() {
       let url =

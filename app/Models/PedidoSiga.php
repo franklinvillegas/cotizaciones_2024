@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class PedidoSiga extends Model
 {
     use HasFactory;
-    protected $table = 'documento_identidad';
+    protected $table = 'pedido_siga';
     protected $fillable = [
       'tipo',
-      'nro_pedido',
+      'nro_cmn',
       'descripcion',
       'consolidado',
       'codigo_ejecutora',
