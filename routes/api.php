@@ -11,6 +11,7 @@ use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\PedidoSigaController;
 use App\Http\Controllers\DetallePedidoSigaController;
 
+use App\Http\Controllers\CotizacionController;
 
 
 
@@ -91,6 +92,7 @@ Route::middleware('auth:api')->group(function () {
   Route::group(['prefix' => 'detallePedidoSiga'], function () {
     Route::get('listarDetalle/{id}', [DetallePedidoSigaController::class, 'listarDetalle']);
   });
+
   //extrasss
   Route::group(['prefix' => 'documento'], function () {
     Route::get('listar', [DocumentoController::class, 'listar']);
