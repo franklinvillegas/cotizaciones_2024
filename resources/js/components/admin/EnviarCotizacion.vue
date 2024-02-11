@@ -147,22 +147,29 @@
                     <div class="form-group col-2">
                       <p class="m-0">
                         <strong>Nro. Cons: </strong>
-                        <label v-text="modalImpresion.detalles.nro_cmn"></label>
+                        <label v-text="modalImpresion.detalles.id"></label>
                       </p>
                     </div>
                     <div class="form-group col-4">
-                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                      <p class="m-0">
+                        <strong>Fecha: </strong>
+                        <label
+                          v-text="modalImpresion.detalles.fecha_pedido"
+                        ></label>
+                      </p>
                     </div>
                     <div class="form-group col-6">
                       <p class="m-0">
-                        <strong>Documento Pedido: </strong> 000983
+                        <strong>Documento Pedido: </strong>
+                        <label v-text="modalImpresion.detalles.nro_cmn"></label>
                       </p>
                     </div>
                     <div class="form-group col-12">
                       <p class="m-0">
-                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
-                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
-                        CATASTRO
+                        <strong>CONCEPTO: </strong>
+                        <label
+                          v-text="modalImpresion.detalles.descripcion"
+                        ></label>
                       </p>
                     </div>
                   </div>
@@ -170,6 +177,7 @@
                     <vue-good-table
                       :columns="listarPedidosDetalle.columns"
                       :rows="listarPedidosDetalle.data"
+                      styleClass="vgt-table bordered"
                       :sort-options="{
                         enabled: false,
                       }"
@@ -269,21 +277,31 @@
                   </div>
                   <div class="row" style="border: 2px solid black">
                     <div class="form-group col-2">
-                      <p class="m-0"><strong>Nro. Cons: </strong> 663</p>
+                      <p class="m-0">
+                        <strong>Nro. Cons: </strong>
+                        <label v-text="modalImpresion.detalles.id"></label>
+                      </p>
                     </div>
                     <div class="form-group col-4">
-                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                      <p class="m-0">
+                        <strong>Fecha: </strong>
+                        <label
+                          v-text="modalImpresion.detalles.fecha_pedido"
+                        ></label>
+                      </p>
                     </div>
                     <div class="form-group col-6">
                       <p class="m-0">
-                        <strong>Documento Pedido: </strong> 000983
+                        <strong>Documento Pedido: </strong>
+                        <label v-text="modalImpresion.detalles.nro_cmn"></label>
                       </p>
                     </div>
                     <div class="form-group col-12">
                       <p class="m-0">
-                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
-                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
-                        CATASTRO
+                        <strong>CONCEPTO: </strong>
+                        <label
+                          v-text="modalImpresion.detalles.descripcion"
+                        ></label>
                       </p>
                     </div>
                   </div>
@@ -310,6 +328,7 @@
                           data-vv-as="00000"
                           placeholder="00000"
                           name="numCotizacion"
+                          v-model="modalPublicacion.detalles.numCotizacion"
                           v-validate="'required'"
                         />
                       </div>
@@ -318,19 +337,12 @@
                           <strong>Fecha de Publicacion: </strong>
                         </label>
                         <input
-                          type="date"
+                          type="datetime-local"
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
                           name="fechaPublicacion"
-                          v-validate="'required'"
-                        />
-                        <input
-                          type="time"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="horaPublicacion"
+                          v-model="modalPublicacion.detalles.fechaPublicacion"
                           v-validate="'required'"
                         />
                       </div>
@@ -339,18 +351,11 @@
                           <strong>Fecha de Finalizacion: </strong>
                         </label>
                         <input
-                          type="date"
+                          type="datetime-local"
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="fechaFizalizacion"
-                          v-validate="'required'"
-                        />
-                        <input
-                          type="time"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
+                          v-model="modalPublicacion.detalles.fechaFizalizacion"
                           name="fechaFizalizacion"
                           v-validate="'required'"
                         />
@@ -360,10 +365,11 @@
                           <strong>Descripción: </strong>
                         </label>
                         <input
-                          type="date"
-                          class="form-group col-3"
+                          type="text"
+                          class="form-group col-6"
                           data-vv-as="00000"
                           placeholder="00000"
+                          v-model="modalPublicacion.detalles.descripcion"
                           name="descripcion"
                           v-validate="'required'"
                         />
@@ -400,7 +406,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" @click="imprimir">
+              <button type="button" class="btn btn-primary" @click="publicar">
                 Publicar
               </button>
               <button
@@ -433,6 +439,7 @@ export default {
           { label: "Pedido", field: "nro_cmn" },
           { label: "Descripcion", field: "descripcion" },
           { label: "Tipo", field: "tipo" },
+          { label: "Tipo", field: "tipo" },
           { label: "Accion", field: "options" },
         ],
         total: 0,
@@ -447,11 +454,11 @@ export default {
       listarPedidosDetalle: {
         data: [],
         columns: [
-          { label: "Cantidad Requerida", field: "id" },
-          { label: "Unidad de Medida", field: "nro_cmn" },
+          { label: "Cantidad Requerida", field: "cantidad" },
+          { label: "Unidad de Medida", field: "unidad_medida" },
           { label: "Descripcion", field: "descripcion" },
-          { label: "Precio Unitario", field: "tipo" },
-          { label: "Precio Total", field: "options" },
+          { label: "Precio Unitario", field: "precio_unitario" },
+          { label: "Precio Total", field: "precio_total´ñ" },
         ],
         total: 0,
         filtrosBusqueda: {
@@ -496,9 +503,29 @@ export default {
         detalles: {
           id: "",
           nro_cmn: "",
+          fecha_pedido: "",
           descripcion: "",
           tipo: "",
           options: "",
+          tabla: [],
+        },
+      },
+      modalPublicacion: {
+        tipo: "",
+        titulo: "",
+        nivelID: null,
+        detalles: {
+          id: "",
+          nro_cmn: "",
+          fecha_pedido : "",
+          descripcion: "",
+          tipo: "",
+          options: "",
+          numCotizacion:"",
+          fechaPublicacion : "",
+          fechaFinalizacion : "",
+          descripcion1 : "",
+          tabla: [],
         },
       },
     };
@@ -584,20 +611,6 @@ export default {
           this.$toastr.e(error.response.data.message);
         });
     },
-    listarPedidoCurso(id_grado) {
-      axios
-        .get("api/grado_curso/listar/" + id_grado)
-        .then((response) => {
-          let data = response.data;
-          console.log("sadasd", data);
-          this.listarPedidoCursos.data = data;
-        })
-        .catch((error) => {
-          console.log(error);
-          this.$toastr.e(error.response.data.message);
-        });
-    },
-
     limpiarFormulario() {
       this.modal = {
         titulo: "",
@@ -631,36 +644,56 @@ export default {
     impresion(row, index) {
       $("#modal-impresion").modal("show");
       this.limpiarFormulario();
-      console.log(row);
-      this.modalImpresion = {
-        titulo: "Solicitud de Cotización",
-        tipo: "ver",
-        detalles: {
-          id: row.id,
-          nro_cmn: row.nro_cmn,
-          descripcion: row.descripcion,
-          tipo: row.tipo,
-        },
-        deshabilitado: true,
-      };
-      this.listarPedidoCurso(row.id);
+      axios
+        .get("api/pedidoSiga/listarImprimir/" + row.id)
+        .then((response) => {
+          console.log(response.data);
+          this.listarPedidosDetalle.data = response.data[0].detalle_pedido_siga;
+          this.modalImpresion = {
+            titulo: "Solicitud de Cotización",
+            tipo: "ver",
+            detalles: {
+              id: response.data[0].id,
+              nro_cmn: response.data[0].nro_cmn,
+              fecha_pedido: response.data[0].fecha_pedido,
+              descripcion: response.data[0].descripcion,
+              tipo: response.data[0].tipo,
+            },
+            deshabilitado: true,
+          };
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$toastr.e(error.response.data.message);
+        });
     },
     publicacion(row, index) {
       $("#modal-publicacion").modal("show");
       this.limpiarFormulario();
-      this.modalImpresion = {
-        titulo: "Publicar Cotización",
-        tipo: "ver",
-        grado: {
-          grado: row.grado,
-          id_grado: row.id,
-          id_nivel: row.id_nivel,
-          id_curso: "",
-          cursos: [],
-        },
-        deshabilitado: true,
-      };
-      this.listarPedidoCurso(row.id);
+      axios
+        .get("api/pedidoSiga/listarImprimir/" + row.id)
+        .then((response) => {
+          console.log(response.data);
+          this.listarPedidosDetalle.data = response.data[0].detalle_pedido_siga;
+          this.modalPublicacion = {
+            titulo: "Solicitud de Cotización",
+            tipo: "ver",
+            detalles: {
+              id: response.data[0].id,
+              nro_cmn: response.data[0].nro_cmn,
+              fecha_pedido: response.data[0].fecha_pedido,
+              descripcion: response.data[0].descripcion,
+              ano_eje: response.data[0].ano_eje,
+              tipo: response.data[0].tipo,
+              estado: response.data[0].estado,
+            },
+            deshabilitado: true,
+          };
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$toastr.e(error.response.data.message);
+        });
     },
     editar(row, index) {
       $("#modal-grado").modal("show");
@@ -759,7 +792,7 @@ export default {
         this.listarPedido();
       });
     },
-    activar(row, index) {
+    publicar(row, index) {
       axios
         .put("api/grado/activar/" + row.id)
         .then((response) => {

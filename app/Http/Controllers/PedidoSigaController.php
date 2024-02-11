@@ -13,4 +13,8 @@ class PedidoSigaController extends Controller
         $lista = PedidoSiga::select();
         return $lista->get();
     }
+    public function listarImprimir($id){
+        $lista = PedidoSiga::select()->with(['detallePedidoSiga'])->where('id',$id);
+        return $lista->get();
+    }
 }
