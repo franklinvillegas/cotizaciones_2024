@@ -9,6 +9,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\PedidoSigaController;
+use App\Http\Controllers\DetallePedidoSigaController;
 
 
 
@@ -85,6 +86,10 @@ Route::middleware('auth:api')->group(function () {
   //Pedido SIGA
   Route::group(['prefix' => 'pedidoSiga'], function () {
     Route::get('listar', [PedidoSigaController::class, 'listar']);
+  });
+  //Detalle Pedido SIGA
+  Route::group(['prefix' => 'detallePedidoSiga'], function () {
+    Route::get('listarDetalle/{id}', [DetallePedidoSigaController::class, 'listarDetalle']);
   });
   //extrasss
   Route::group(['prefix' => 'documento'], function () {
