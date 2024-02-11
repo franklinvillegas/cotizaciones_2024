@@ -5,12 +5,10 @@
         <hr>
         <div class="row p-t">
             <div class="col-md-5">
-                <label for="" class="form-label">Tipo</label>
-                <select class="form-control" v-model="listaUsuarios.filtrosBusqueda.tipo" @change="listarUsuarios">
+                <label for="" class="form-label">Estado</label>
+                <select class="form-control" v-model="listaCotizaciones.filtrosBusqueda.tipo" @change="listarCotizaciones">
+                    <option value="Disponible">Disponible</option>
                     <option value="">-- Todos --</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Docente">Docente</option>
-                    <option value="Alumno">Alumno</option>
                 </select>
             </div>
             <div class="col-md-7">
@@ -51,8 +49,8 @@
         </button><br>
         <div class="table-responsive m-t">
             <vue-good-table
-            :columns="listaUsuarios.columns"
-            :rows="listaUsuarios.data"
+            :columns="listaCotizaciones.columns"
+            :rows="listaCotizaciones.data"
             :search-options="{
                 enabled: true,
                 placeholder: 'Buscar en la tabla',
@@ -69,6 +67,9 @@
             }"
             >
             <template slot="table-row" slot-scope="props">
+                <!-- <span v-if="props.column.field == 'publicacion_cotizacion.fecha_fin'">
+                    {{ formatdate(props.row.publicacion_cotizacion.fecha_fin) }}
+                </span> -->
                 <span v-if="props.column.field == 'options'">
                 <button class="btn btn-outline-secondary btn-sm btn-icon" @click.prevent="ver(props.row, props.index)" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></button>
                 <button class="btn btn-outline-info btn-sm btn-icon" @click.prevent="editar(props.row, props.index)" data-toggle="tooltip" title="Editar"><i class="fas fa-pencil-alt"></i></button>
@@ -316,17 +317,12 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
         },
         data(){
             return{
-                listaUsuarios:{
+                listaCotizaciones:{
                     data: [],
                     columns:[
-                        {label: 'Usuario', field: 'email',},
-                        {label: 'Num Doc.', field: 'persona.num_docid',},
-                        {label: 'Nombres', field: 'persona.nombres',},
-                        {label: 'Apellido Pat', field: 'persona.apellido_pat',},
-                        {label: 'Apellido Mat', field: 'persona.apellido_mat',},
-                        {label: 'Tipo', field: 'tipo_usuario',},
-                        {label: 'U.visita', field: 'ult_visita',},
-                        {label: 'F.Creación', field: 'created_at',},
+                        {label: 'Nro', field: 'nro_cotizacion',},
+                        {label: 'Descripción', field: 'pedido_siga.descripcion',},
+                        {label: 'Finaliza', field: 'publicacion_cotizacion.fecha_fin',formatfn: this.formatdate,},
                         {label: 'Opciones', field: 'options',},
                     ],
                     total: 0,
@@ -389,13 +385,13 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
             }
         },
         created(){
-           this.listarUsuarios();
+           this.listarCotizaciones();
         },
         methods:{
-            listarUsuarios(){
-                axios.get("api/usuario/listar"+Helper.getFilterURL(this.listaUsuarios.filtrosBusqueda))
+            listarCotizaciones(){
+                axios.get("api/cotizacionPublico/listar"+Helper.getFilterURL(this.listaCotizaciones.filtrosBusqueda))
                 .then((response) => {
-                    this.listaUsuarios.data =  response.data;
+                    this.listaCotizaciones.data =  response.data;
                 
                 })
                 .catch((error) => {
@@ -403,15 +399,22 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                     this.$toastr.e(error.response.data.message);
                 }); 
             },
+            formatdate(value) {
+                console.log('entro aqui', value)
+      return moment(value).format("mmmm dd yyyy")
+  },
+            formatauthority(value) {
+                return `item ${value}`;
+            },
            
             seleccionoFecha(evt){
-                this.listaUsuarios.filtrosBusqueda.fechaIni = Helper.formatearSoloFechaGenerico(evt.startDate);
-                this.listaUsuarios.filtrosBusqueda.fechaFin = Helper.formatearSoloFechaGenerico(evt.endDate);
-                this.listarUsuarios();
+                this.listaCotizaciones.filtrosBusqueda.fechaIni = Helper.formatearSoloFechaGenerico(evt.startDate);
+                this.listaCotizaciones.filtrosBusqueda.fechaFin = Helper.formatearSoloFechaGenerico(evt.endDate);
+                this.listarCotizaciones();
             },
             seleccionoOcupacion(){
-                this.listaUsuarios.filtrosBusqueda.ocupacion = (this.ocupacionesSel.map((elem) => elem.id)).join(',');
-                this.listarUsuarios();
+                this.listaCotizaciones.filtrosBusqueda.ocupacion = (this.ocupacionesSel.map((elem) => elem.id)).join(',');
+                this.listarCotizaciones();
             },
             limpiarFormulario(){
                 this.modal = {
@@ -525,7 +528,7 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                         .then((response) => {
                             this.$toastr.s(response.data.message);
                             $("#modal-administrador").modal('hide');
-                            this.listarUsuarios();
+                            this.listarCotizaciones();
                         })
                         .catch((error) => {
                             console.log(error);
@@ -541,7 +544,7 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                         .then((response) => {
                             this.$toastr.s(response.data.message);
                             $("#modal-administrador").modal('hide');
-                            this.listarUsuarios();
+                            this.listarCotizaciones();
                         })
                         .catch((error) => {
                             console.log(error);
@@ -557,7 +560,7 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                         .then((response) => {
                             this.$toastr.s(response.data.message);
                             $("#modal-usuario").modal('hide');
-                            this.listarUsuarios();
+                            this.listarCotizaciones();
                         })
                         .catch((error) => {
                             console.log(error);
@@ -570,7 +573,7 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                 axios.put("api/usuario/inactivar/"+row.id)
                 .then((response) => {
                     this.$toastr.s(response.data.message);
-                    this.listarUsuarios();
+                    this.listarCotizaciones();
                 })
                 .catch((error) => {
                     this.$toastr.e(error.response.data.message);
@@ -620,12 +623,12 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                    
             },
             exportar(){
-                if(this.listaUsuarios.filtrosBusqueda.fechaIni){
-                    this.listaUsuarios.filtrosBusqueda.fechaIni
-                    this.listaUsuarios.filtrosBusqueda.fechaFin
+                if(this.listaCotizaciones.filtrosBusqueda.fechaIni){
+                    this.listaCotizaciones.filtrosBusqueda.fechaIni
+                    this.listaCotizaciones.filtrosBusqueda.fechaFin
                 }
 
-                let url = process.env.MIX_APP_URL + '/exportar/usuarios' + Helper.getFilterURL(this.listaUsuarios.filtrosBusqueda);
+                let url = process.env.MIX_APP_URL + '/exportar/usuarios' + Helper.getFilterURL(this.listaCotizaciones.filtrosBusqueda);
                 window.open(url);
             }
         },

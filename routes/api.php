@@ -9,7 +9,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\PedidoSigaController;
-
+use App\Http\Controllers\CotizacionController;
 
 
 
@@ -86,11 +86,17 @@ Route::middleware('auth:api')->group(function () {
   Route::group(['prefix' => 'pedidoSiga'], function () {
     Route::get('listar', [PedidoSigaController::class, 'listar']);
   });
+
   //extrasss
   Route::group(['prefix' => 'documento'], function () {
     Route::get('listar', [DocumentoController::class, 'listar']);
   });
 
 });
+
+  //Cotizacion
+  Route::group(['prefix' => 'cotizacionPublico'], function () {
+    Route::get('listar', [CotizacionController::class, 'listar']);
+  });
 
 
