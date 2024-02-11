@@ -98,4 +98,9 @@ Route::middleware('auth:api')->group(function () {
 
 });
 
+  //Cotizacion
+  Route::group(['prefix' => 'cotizacionPublico'], function () {
+    Route::get('listar', [CotizacionController::class, 'listar']);
+  });
+
 
