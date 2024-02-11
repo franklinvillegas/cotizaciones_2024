@@ -87,6 +87,8 @@ Route::middleware('auth:api')->group(function () {
   //Pedido SIGA
   Route::group(['prefix' => 'pedidoSiga'], function () {
     Route::get('listar', [PedidoSigaController::class, 'listar']);
+    Route::get('listarImprimir/{id}', [PedidoSigaController::class, 'listarImprimir']);
+
   });
   //Detalle Pedido SIGA
   Route::group(['prefix' => 'detallePedidoSiga'], function () {

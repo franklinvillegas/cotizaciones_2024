@@ -17,6 +17,9 @@ class PedidoSiga extends Model
       'codigo_ejecutora',
       'fecha_pedido',
       'ano_eje',
-      'estado',       
+      'estado',         
     ];
+    public function detallePedidoSiga(){
+      return $this->hasMany(DetallePedidoSiga::class, 'id_pedido', 'id');
+  }
 }
