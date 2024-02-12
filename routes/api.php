@@ -90,9 +90,16 @@ Route::middleware('auth:api')->group(function () {
     Route::get('listarImprimir/{id}', [PedidoSigaController::class, 'listarImprimir']);
 
   });
+
   //Detalle Pedido SIGA
   Route::group(['prefix' => 'detallePedidoSiga'], function () {
     Route::get('listarDetalle/{id}', [DetallePedidoSigaController::class, 'listarDetalle']);
+  });
+
+  // Cotizacion
+  Route::group(['prefix' => 'cotizacion'], function () {
+    Route::get('listar', [CotizacionController::class, 'listar']);
+    Route::post('publicar', [CotizacionController::class, 'publicar']);
   });
 
   //extrasss
