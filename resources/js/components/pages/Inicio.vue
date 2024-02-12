@@ -71,233 +71,412 @@
                     {{ formatdate(props.row.publicacion_cotizacion.fecha_fin) }}
                 </span> -->
                 <span v-if="props.column.field == 'options'">
-                <button class="btn btn-outline-secondary btn-sm btn-icon" @click.prevent="ver(props.row, props.index)" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-outline-info btn-sm btn-icon" @click.prevent="editar(props.row, props.index)" data-toggle="tooltip" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                <button v-if="props.row.es_admin == false" class="btn btn-outline-success mt btn-sm btn-icon" @click.prevent="enviarMensaje(props.row, props.index)" data-toggle="tooltip" title="Enviar Mensaje"><i class="fas fa-envelope"></i></button>
-                <button v-if="props.row.activo == true" class="btn btn-outline-danger mt btn-sm btn-icon" @click.prevent="inactivar(props.row, props.index)" data-toggle="tooltip" title="Inactivar"><i class="fas fa-trash-alt"></i></button>
-                <button v-else class="btn btn-outline-success btn-sm btn-icon" @click.prevent="activar(props.row, props.index)" data-toggle="tooltip" title="Activar"><i class="fas fa-check"></i></button>
+                    <button
+                    class="btn btn-success btn-sm btn-icon"
+                    @click.prevent="detalle(props.row, props.index)"
+                    data-toggle="tooltip"
+                    title="Agregar"
+                    >
+                    Detalle
+                    </button>
+                    <button
+                    class="btn btn-danger btn-sm btn-icon"
+                    @click.prevent="publicacion(props.row, props.index)"
+                    data-toggle="tooltip"
+                    title="Agregar"
+                    >
+                    Cotizar
+                    </button>                
                 </span>
             </template>
             </vue-good-table>
         </div>
-        <!-- Modal -->
-        <template>
-            <div class="modal fade" id="modal-administrador" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle" v-text="modal.titulo"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form" data-vv-scope="form_registro">
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Usuario</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modal.usuario.email"
-                                    class="form-control"
-                                    data-vv-as="Usuario"
-                                    name="email"
-                                    v-validate="'required'">
-                                    <span class="text-danger">{{errors.first("form_registro.email")}}</span>
-                                </div>
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Contraseña</strong>
-                                        <template v-if="modal.tipo=='editar'">
-                                            <br>
-                                            <input type="checkbox" id="editar-password" v-model="modal.usuario.editarPassword">
-                                            <label for="editar-password">Editar contraseña</label>
-                                        </template>
-                                    </p>
-                                    <input type="text" v-if="modal.usuario.editarPassword"
-                                    v-model="modal.usuario.password"
-                                    class="form-control"
-                                    data-vv-as="Contraseña"
-                                    name="password"
-                                    v-validate="'required'">
-                                    <span class="text-danger">{{errors.first("form_registro.password")}}</span>
-                                </div>  
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Tipo Usuario</strong>
-                                    </p>
-                                    <select name="tipo_usuario" v-model="modal.usuario.tipo_usuario" class="form-control">
-                                        <option value="">--Seleccione--</option>
-                                        <option value="1">Administrador</option>
-                                        <option value="2">Docente</option>
-                                        <option value="3">Alumno</option>
-                                    </select>
-                                    <span class="text-danger">{{errors.first("form_registro.tipo_usuario")}}</span>
-                                </div>  
-                                <hr> 
-                                <div class="form-group col-md-4">
-                                    <div>
-                                    <p class="m-0">
-                                        <strong>Documento</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modal.usuario.num_docid"
-                                    class="form-control"
-                                    data-vv-as="Documento"
-                                    placeholder="Documento"
-                                    name="num_docid"
-                                    v-validate="'required|digits:8'">
-                                    <span class="text-danger">{{errors.first("form_registro.num_docid")}}</span>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div v-if="modal.tipo == 'nuevo'">
-                                    <p class="m-0">
-                                        <strong>Buscar persona</strong>
-                                    </p>
-                                    <button type="button"  class="btn btn-secondary" :disabled="modal.usuario.num_docid==''" @click="buscar(modal.usuario.num_docid)"><i class="fa fa-search"></i></button>
-                                    </div>
-                                </div>                         
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Nombres</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modal.usuario.nombres"
-                                    class="form-control"
-                                    data-vv-as="Nombres"
-                                    name="nombres"
-                                    v-validate="'required'">
-                                    <span class="text-danger">{{errors.first("form_registro.nombres")}}</span>
-                                </div>
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Apellidos</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modal.usuario.apellidos"
-                                    class="form-control"
-                                    data-vv-as="Apellidos"
-                                    name="apellidos"
-                                    v-validate="'required'">
-                                    <span class="text-danger">{{errors.first("form_registro.apellidos")}}</span>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cerrar</button>
-                            <button type="button" v-if="modal.tipo =='nuevo'" class="btn btn-primary" @click="guardar">Guardar</button>
-                            <button type="button" v-else-if="modal.tipo =='editar'" class="btn btn-primary" @click="modificar">Actualizar</button>
-                        </div>
+ <!-- Modal Detalle -->
+ <template id="detalle">
+      <div
+        class="modal fade"
+        id="modal-detalle"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div id="modal-publicar">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalDetalle.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Unidad Ejecutora: </strong>
+                        GERENCIA SUB REGIONAL CHANKA
+                      </p>
                     </div>
-                </div>
-            </div>
-        </template>
-
-         <template>
-            <div class="modal fade" id="modal-usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle" v-text="modalUsuario.titulo"></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form" data-vv-scope="form_registro_usuario">
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Usuario</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modalUsuario.usuario.email"
-                                    class="form-control"
-                                    data-vv-as="Correo electrónico"
-                                    name="email"
-                                    v-validate="'required'"
-                                    disabled>
-                                    <span class="text-danger">{{errors.first("form_registro_usuario.email")}}</span>
-                                </div>
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Usuario</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modalUsuario.usuario.usuario"
-                                    class="form-control"
-                                    data-vv-as="Usuario"
-                                    name="usuario"
-                                    v-validate="'required'"
-                                    >
-                                    <span class="text-danger">{{errors.first("form_registro_usuario.usuario")}}</span>
-                                </div>
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>ocupacion</strong>
-                                    </p>
-                                    <multiselect
-                                        v-model="modalUsuario.usuarioOcupacionSel"
-                                        :options="comboOcupacion"
-                                        data-vv-as="Ocupación"
-                                        name="ocupacion"
-                                        v-validate="'required'"
-                                        placeholder="-- Seleccione --"
-                                        label="nombre"
-                                        track-by="id"
-                                        :close-on-select="true"
-                                        :searchable="true"
-                                        :show-labels="false"
-                                        :multiple="false"
-                                    >
-                                    </multiselect>
-                                </div>
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Nombres</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modalUsuario.usuario.nombres"
-                                    class="form-control"
-                                    data-vv-as="Nombres"
-                                    name="nombres"
-                                    v-validate="'required'">
-                                    <span class="text-danger">{{errors.first("form_registro_usuario.nombres")}}</span>
-                                </div>
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Apellidos</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modalUsuario.usuario.apellidos"
-                                    class="form-control"
-                                    data-vv-as="Apellidos"
-                                    name="apellidos"
-                                    v-validate="'required'">
-                                    <span class="text-danger">{{errors.first("form_registro_usuario.apellidos")}}</span>
-                                </div>
-                                <div class="form-group">
-                                    <p class="m-0">
-                                        <strong>Puesto actual</strong>
-                                    </p>
-                                    <input type="text"
-                                    v-model="modalUsuario.usuario.puesto_actual"
-                                    class="form-control"
-                                    data-vv-as="Puesto actual"
-                                    name="puesto_actual"
-                                    v-validate="'required'">
-                                    <span class="text-danger">{{errors.first("form_registro_usuario.puesto_actual")}}</span>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cerrar</button>
-                            <button type="button" v-if="modalUsuario.tipo =='editar'" class="btn btn-primary" @click="modificarUsuario">Actualizar</button>
-                        </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Nro. de Identificacion: </strong>
+                        000748
+                      </p>
                     </div>
-                </div>
+                  </div>
+                  <div class="row" style="border: 2px solid black">
+                    <div class="form-group col-2">
+                      <p class="m-0"><strong>Nro. Cons: </strong> 663</p>
+                    </div>
+                    <div class="form-group col-4">
+                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Documento Pedido: </strong> 000983
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
+                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
+                        CATASTRO
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <vue-good-table
+                      :columns="listarPedidosDetalle.columns"
+                      :rows="listarPedidosDetalle.data"
+                      :sort-options="{
+                        enabled: false,
+                      }"
+                    >
+                    </vue-good-table>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Nro de Cotización: </strong>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="numCotizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Publicacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaPublicacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="horaPublicacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Finalizacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Descripción: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="descripcion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar documento: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="documento"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar EE.TT.: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="eett"
+                          v-validate="'required'"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
-        </template>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">
+                Publicar
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-dismiss="modal"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <!-- Modal Publicacion -->
+    <template id="publicacion">
+      <div
+        class="modal fade"
+        id="modal-publicacion"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div id="modal-publicar">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalDetalle.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Unidad Ejecutora: </strong>
+                        GERENCIA SUB REGIONAL CHANKA
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Nro. de Identificacion: </strong>
+                        000748
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row" style="border: 2px solid black">
+                    <div class="form-group col-2">
+                      <p class="m-0"><strong>Nro. Cons: </strong> 663</p>
+                    </div>
+                    <div class="form-group col-4">
+                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Documento Pedido: </strong> 000983
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
+                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
+                        CATASTRO
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <vue-good-table
+                      :columns="listarPedidosDetalle.columns"
+                      :rows="listarPedidosDetalle.data"
+                      :sort-options="{
+                        enabled: false,
+                      }"
+                    >
+                    </vue-good-table>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Nro de Cotización: </strong>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="numCotizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Publicacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaPublicacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="horaPublicacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Finalizacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Descripción: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="descripcion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar documento: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="documento"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar EE.TT.: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="eett"
+                          v-validate="'required'"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary">
+                Publicar
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-dismiss="modal"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
     </div>
 </template>
 
@@ -337,6 +516,24 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                     },
                     deshabilitarEdicion: false,
                 },
+                listarPedidosDetalle: {
+                    data: [],
+                    columns: [
+                    { label: "Cantidad Requerida", field: "id" },
+                    { label: "Unidad de Medida", field: "nro_cmn" },
+                    { label: "Descripcion", field: "descripcion" },
+                    { label: "Precio Unitario", field: "tipo" },
+                    { label: "Precio Total", field: "options" },
+                    ],
+                    total: 0,
+                    filtrosBusqueda: {
+                    tipo: "",
+                    orden: "asc",
+                    ordenPor: "id",
+                    regPagina: "10",
+                    },
+                    deshabilitarEdicion: false,
+                },
                 desabilitado: false,
                 botonesActive: {
                     todos: true,
@@ -345,36 +542,17 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                 mensaje: {
                     mensaje: '',
                 },
-                modal:{
-                    tipo:  '',
-                    titulo:  '',
-                    usuarioID: null,
-                    usuario:{
-                        email: '',
-                        num_docid: '',
-                        nombres: '',
-                        apellidos: '',
-                        password: '',
-                        tipo_usuario: '',
-                        editarPassword: true,
-                        es_admin: true
-                    }
-                },
-                modalUsuario:{
-                    tipo:  '',
-                    titulo:  '',
-                    usuarioID: null,
-                    usuarioOcupacionSel: null,
-                    usuario:{
-                        email: '',
-                        id_per: '',
-                        nombres: '',
-                        apellidos: '',
-                        password: '',
-                        tipo_usuario: '',
-                        editarPassword: true,
-                        es_admin: true
-                    }
+                modalDetalle: {
+                    tipo: "",
+                    titulo: "",
+                    nivelID: null,
+                    detalles: {
+                    id: "",
+                    nro_cmn: "",
+                    descripcion: "",
+                    tipo: "",
+                    options: "",
+                    },
                 },
                 dateRange: {
                     startDate: '',
@@ -399,10 +577,27 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                     this.$toastr.e(error.response.data.message);
                 }); 
             },
+            detalle(row, index) {
+                $("#modal-detalle").modal("show");
+                this.limpiarFormulario();
+                console.log(row);
+                this.modalDetalle = {
+                    titulo: "DETALLE COTIZACIÓN",
+                    tipo: "ver",
+                    detalles: {
+                    id: row.id,
+                    nro_cmn: row.nro_cmn,
+                    descripcion: row.descripcion,
+                    tipo: row.tipo,
+                    },
+                    deshabilitado: true,
+                };
+                // this.listarPedidoCurso(row.id);
+            },
             formatdate(value) {
                 console.log('entro aqui', value)
-      return moment(value).format("mmmm dd yyyy")
-  },
+                return moment(value).format("mmmm dd yyyy")
+             },
             formatauthority(value) {
                 return `item ${value}`;
             },

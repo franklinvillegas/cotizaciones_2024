@@ -10,6 +10,7 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\PedidoSigaController;
 use App\Http\Controllers\DetallePedidoSigaController;
+use App\Http\Controllers\RequerimientoSigaController;
 
 use App\Http\Controllers\CotizacionController;
 
@@ -88,6 +89,7 @@ Route::middleware('auth:api')->group(function () {
   Route::group(['prefix' => 'pedidoSiga'], function () {
     Route::get('listar', [PedidoSigaController::class, 'listar']);
     Route::get('listarImprimir/{id}', [PedidoSigaController::class, 'listarImprimir']);
+    Route::post('crear', [PedidoSigaController::class, 'crear']);
 
   });
 
@@ -100,6 +102,11 @@ Route::middleware('auth:api')->group(function () {
   Route::group(['prefix' => 'cotizacion'], function () {
     Route::get('listar', [CotizacionController::class, 'listar']);
     Route::post('publicar', [CotizacionController::class, 'publicar']);
+  });
+  //Requermiento SIGA
+  Route::group(['prefix' => 'requerimientoSiga'], function () {
+    Route::get('listar', [RequerimientoSigaController::class, 'listar']);
+    Route::get('listarDetalle/{ano_eje}/{nro_cmn}', [RequerimientoSigaController::class, 'listarDetalle']);
   });
 
   //extrasss
