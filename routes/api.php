@@ -89,6 +89,7 @@ Route::middleware('auth:api')->group(function () {
   Route::group(['prefix' => 'pedidoSiga'], function () {
     Route::get('listar', [PedidoSigaController::class, 'listar']);
     Route::get('listarImprimir/{id}', [PedidoSigaController::class, 'listarImprimir']);
+    Route::post('crear', [PedidoSigaController::class, 'crear']);
 
   });
 
@@ -100,6 +101,7 @@ Route::middleware('auth:api')->group(function () {
   //Requermiento SIGA
   Route::group(['prefix' => 'requerimientoSiga'], function () {
     Route::get('listar', [RequerimientoSigaController::class, 'listar']);
+    Route::get('listarDetalle/{ano_eje}/{nro_cmn}', [RequerimientoSigaController::class, 'listarDetalle']);
   });
 
   //extrasss
