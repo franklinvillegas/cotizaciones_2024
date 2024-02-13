@@ -16,18 +16,34 @@ class CotizacionController extends Controller
         $lista = Cotizacion::select()->with(['pedidoSiga:id,nro_cmn,descripcion','publicacionCotizacion']);
         return $lista->get();
     }
+      public function publicar(Request $request){
+        try {
+          $nuevoCotizacion = new Cotizacion();
+          $nuevoCotizacion->estado = $request->detalles["estado"];
+          $nuevoCotizacion->nro_cotizacion = $request->detalles["numCotizacion"];
+          $nuevoCotizacion->ano_eje = $request->detalles["ano_eje"];
+          $nuevoCotizacion->id_pedido = $request->detalles["id"];
+          $nuevoCotizacion->save();
+          if ($nuevoCotizacion->id) {
+            try {
+            $nuevoPublicacionCotizacion = new PublicacionCotizacion;
+            $fechaPublicacion = date_create($request->detalles["fechaPublicacion"]);
+            $nuevoPublicacionCotizacion->fecha_publicacion=date_format($fechaPublicacion,"Y-m-d H:i:s");
+            $fechaFinalizacion = date_create($request->detalles["fechaFinalizacion"]);
+            $nuevoPublicacionCotizacion->fecha_fin=date_format($fechaFinalizacion,'Y-m-d H:i:s');
+            $nuevoPublicacionCotizacion->id_cotizacion=$nuevoCotizacion->id;
+            $nuevoPublicacionCotizacion->save();
+            }
+            catch (\Exception $e) {
+              // Manejar el error de guardado
+              return response()->json(['error' => 'Error al guardar la PUBLICACION: ' . $e->getMessage()], 500);
+              }
+          } 
+          return response()->json(['message' => 'Se publicó correctamente', 'identificador' => $nuevoCotizacion->id]);
 
-  //   public function listar(){
-  //     $lista = DB::connection('sqlsrv2')->select('select spc.NRO_CONSOLID as nro_cmn,spc.ESPEC_TECNICAS as descripcion, 
-  //     spc.NRO_PAAC as consolidado, spc.SEC_EJEC as codigo_ejecutora,spc.FECHA_CONS as fecha_pedido,
-  //     spc.ANO_EJE as ano_eje, spc.ESTADO as estado, spi.CANTIDAD as cantidad, um.ABREVIATURA as unidad_medida,
-  //     bs.NOMBRE_ITEM as descripcionitem, spi.PRECIO_UNIT,spi.PRECIO_UNIT*spi.CANTIDAD as total
-  //     from ((SIG_PAAC_CONSOLIDADO spc inner join SIG_PAAC_ITEM spi on spc.NRO_CONSOLID=spi.NRO_CONSOLID)
-  //     inner join CATALOGO_BIEN_SERV bs on spi.grupo_bien+spi.clase_bien+spi.FAMILIA_BIEN+spi.ITEM_BIEN=
-  //     bs.grupo_bien+bs.clase_bien+bs.FAMILIA_BIEN+bs.ITEM_BIEN AND spi.TIPO_BIEN=bs.TIPO_BIEN ) inner join UNIDAD_MEDIDA um
-  //     on bs.UNIDAD_MEDIDA=um.UNIDAD_MEDIDA
-      
-  //     where spc.ANO_EJE=2024 and spi.ANO_EJE=2024 and spc.TIPO_CONSOLID!=1  order by nro_cmn');
-  //     return $lista;
-  // }
+        } catch (\Exception $e) {
+            // Manejar el error de guardado
+            return response()->json(['error' => 'Error al guardar la cotización: ' . $e->getMessage()], 500);
+        }
+}
 }

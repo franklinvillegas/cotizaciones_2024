@@ -355,7 +355,7 @@
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          v-model="modalPublicacion.detalles.fechaFizalizacion"
+                          v-model="modalPublicacion.detalles.fechaFinalizacion"
                           name="fechaFizalizacion"
                           v-validate="'required'"
                         />
@@ -458,7 +458,7 @@ export default {
           { label: "Unidad de Medida", field: "unidad_medida" },
           { label: "Descripcion", field: "descripcion" },
           { label: "Precio Unitario", field: "precio_unitario" },
-          { label: "Precio Total", field: "precio_total´ñ" },
+          { label: "Precio Total", field: "precio_total" },
         ],
         total: 0,
         filtrosBusqueda: {
@@ -794,10 +794,9 @@ export default {
     },
     publicar(row, index) {
       axios
-        .put("api/grado/activar/" + row.id)
+        .post("api/cotizacion/publicar",this.modalPublicacion)
         .then((response) => {
           this.$toastr.s(response.data.message);
-          row.activo = true;
         })
         .catch((error) => {
           this.$toastr.e(error.response.data.message);
