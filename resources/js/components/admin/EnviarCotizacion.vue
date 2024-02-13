@@ -381,10 +381,11 @@
                         <input
                           type="file"
                           class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
+                          data-vv-as="documento"
+                          placeholder="documento"
                           name="documento"
-                          v-validate="'required'"
+                          id="documento"
+                          accept="application/pdf" v-validate="'required|max:500'"
                         />
                       </div>
                       <div class="form-group col-12">
@@ -397,7 +398,8 @@
                           data-vv-as="00000"
                           placeholder="00000"
                           name="eett"
-                          v-validate="'required'"
+                          id="eett"
+                          accept="application/pdf" v-validate="'required|max:500'"
                         />
                       </div>
                     </div>
@@ -544,7 +546,6 @@ export default {
         .then((response) => {
           let data = response.data;
           this.listarPedidos.data = data;
-          console.log(this.listarPedidos);
         })
         .catch((error) => {
           console.log(error);
@@ -673,7 +674,6 @@ export default {
       axios
         .get("api/pedidoSiga/listarImprimir/" + row.id)
         .then((response) => {
-          console.log(response.data);
           this.listarPedidosDetalle.data = response.data[0].detalle_pedido_siga;
           this.modalPublicacion = {
             titulo: "Solicitud de Cotización",
@@ -792,9 +792,24 @@ export default {
         this.listarPedido();
       });
     },
-    publicar(row, index) {
+    publicar() {
+      let _this = this;
+      let data = new FormData();
+      data.append('documento', document.getElementById('documento').files[0]);
+      data.append('eett', document.getElementById('eett').files[0]);
+      data.append('ano_eje',_this.modalPublicacion.detalles.ano_eje);
+      data.append('descripcion',_this.modalPublicacion.detalles.descripcion);
+      data.append('estado',_this.modalPublicacion.detalles.estado);
+      data.append('fechaFinalizacion',_this.modalPublicacion.detalles.fechaFinalizacion);
+      data.append('fechaPublicacion',_this.modalPublicacion.detalles.fechaPublicacion);
+      data.append('fecha_pedido',_this.modalPublicacion.detalles.fecha_pedido);
+      data.append('id'      ,_this.modalPublicacion.detalles.id);
+      data.append('nro_cmn',_this.modalPublicacion.detalles.nro_cmn);
+      data.append('numCotizacion',_this.modalPublicacion.detalles.numCotizacion);
+      data.append('tipo',_this.modalPublicacion.detalles.tipo);
+      console.log(data);
       axios
-        .post("api/cotizacion/publicar",this.modalPublicacion)
+        .post("api/cotizacion/publicar",data)
         .then((response) => {
           this.$toastr.s(response.data.message);
         })
