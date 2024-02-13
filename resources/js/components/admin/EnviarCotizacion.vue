@@ -380,7 +380,7 @@
                         </label>
                         <input
                           type="file"
-                          class="form-group col-3"
+                          class="form-group col-6"
                           data-vv-as="documento"
                           placeholder="documento"
                           name="documento"
@@ -394,7 +394,7 @@
                         </label>
                         <input
                           type="file"
-                          class="form-group col-3"
+                          class="form-group col-6"
                           data-vv-as="00000"
                           placeholder="00000"
                           name="eett"
@@ -812,10 +812,34 @@ export default {
         .post("api/cotizacion/publicar",data)
         .then((response) => {
           this.$toastr.s(response.data.message);
+          $("#modal-publicacion").modal("hide");
+          document.getElementById('documento').value='';
+          document.getElementById('eett').value='';
+          this.modalPublicacion= {
+            tipo: "",
+            titulo: "",
+            nivelID: null,
+            detalles: {
+              id: "",
+              nro_cmn: "",
+              fecha_pedido : "",
+              descripcion: "",
+              tipo: "",
+              documento:"",
+              eett:"",
+              options: "",
+              numCotizacion:"",
+              fechaPublicacion : "",
+              fechaFinalizacion : "",
+              descripcion1 : "",
+              tabla: [],
+            },
+          }
         })
         .catch((error) => {
           this.$toastr.e(error.response.data.message);
         });
+
     },
     listarContenidoPeligroso() {
       this.listarPedidos.filtrosBusqueda.contenidoPeligroso = true;

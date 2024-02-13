@@ -61,7 +61,7 @@ class CotizacionController extends Controller
               $nuevoEett->url_documento= $path;
               $nuevoEett->id_publicacion = $nuevoPublicacionCotizacion->id;
               $nuevoEett->save();
-              return response()->json(['message' => 'El libro se creó correctamente', 'identificador' => $nuevoEett->id]);
+              return response()->json(['message' => 'Se Publicó Correctamente', 'identificador' => $nuevoEett->id]);
               }
               catch (\Exception $e) {
                 // Manejar el error de guardado
