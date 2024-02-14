@@ -18,4 +18,7 @@ class PublicacionCotizacion extends Model
     public function cotizacion(){
         return $this->belongsTo(Cotizacion::class, 'id_cotizacion', 'id');
     }
+    public function documentoCotizacion(){
+        return $this->hasMany(DocumentoCotizacion::class, 'id_publicacion', 'id');
+    }
 }

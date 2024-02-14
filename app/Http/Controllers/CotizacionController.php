@@ -14,7 +14,7 @@ class CotizacionController extends Controller
     // listar cotizaciones
 
       public function listar(){
-        $lista = Cotizacion::select()->with(['pedidoSiga:id,nro_cmn,descripcion,tipo','publicacionCotizacion']);
+        $lista = Cotizacion::select()->with(['pedidoSiga:id,nro_cmn,descripcion,tipo','publicacionCotizacion','publicacionCotizacion.documentoCotizacion']);
         return $lista->get();
     }
       public function publicar(Request $request){

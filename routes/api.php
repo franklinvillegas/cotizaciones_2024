@@ -112,6 +112,7 @@ Route::middleware('auth:api')->group(function () {
   //extrasss
   Route::group(['prefix' => 'documento'], function () {
     Route::get('listar', [DocumentoController::class, 'listar']);
+    Route::get('verDocumento/{documento}','DocumentoController@verDocumento');
   });
 
 });

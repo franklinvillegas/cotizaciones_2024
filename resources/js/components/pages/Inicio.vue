@@ -138,21 +138,31 @@
                   </div>
                   <div class="row" style="border: 2px solid black">
                     <div class="form-group col-2">
-                      <p class="m-0"><strong>Nro. Cons: </strong> 663</p>
+                      <p class="m-0">
+                        <strong>Nro. Cons: </strong>
+                        <label v-text="modalDetalle.detalles.consolidado"></label>
+                      </p>
                     </div>
                     <div class="form-group col-4">
-                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                      <p class="m-0">
+                        <strong>Fecha: </strong>
+                        <label
+                          v-text="modalDetalle.detalles.fecha_pedido"
+                        ></label>
+                      </p>
                     </div>
                     <div class="form-group col-6">
                       <p class="m-0">
-                        <strong>Documento Pedido: </strong> 000983
+                        <strong>Documento Pedido: </strong>
+                        <label v-text="modalDetalle.detalles.nro_cmn"></label>
                       </p>
                     </div>
                     <div class="form-group col-12">
                       <p class="m-0">
-                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
-                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
-                        CATASTRO
+                        <strong>CONCEPTO: </strong>
+                        <label
+                          v-text="modalDetalle.detalles.descripcion"
+                        ></label>
                       </p>
                     </div>
                   </div>
@@ -178,8 +188,9 @@
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="numCotizacion"
-                          v-validate="'required'"
+                          name="nro_cotizacion"
+                          v-model="modalDetalle.detalles.nro_cotizacion"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
@@ -187,20 +198,13 @@
                           <strong>Fecha de Publicacion: </strong>
                         </label>
                         <input
-                          type="date"
+                          type="datetime-local"
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="fechaPublicacion"
-                          v-validate="'required'"
-                        />
-                        <input
-                          type="time"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="horaPublicacion"
-                          v-validate="'required'"
+                          name="fecha_publicacion"
+                          v-model="modalDetalle.detalles.fecha_publicacion"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
@@ -208,20 +212,13 @@
                           <strong>Fecha de Finalizacion: </strong>
                         </label>
                         <input
-                          type="date"
+                          type="datetime-local"
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="fechaFizalizacion"
-                          v-validate="'required'"
-                        />
-                        <input
-                          type="time"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="fechaFizalizacion"
-                          v-validate="'required'"
+                          v-model="modalDetalle.detalles.fecha_fin"
+                          name="fecha_fin"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
@@ -229,39 +226,30 @@
                           <strong>Descripción: </strong>
                         </label>
                         <input
-                          type="date"
-                          class="form-group col-3"
+                          type="text"
+                          class="form-group col-6"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="descripcion"
-                          v-validate="'required'"
+                          v-model="modalDetalle.detalles.descripcion2"
+                          name="descripcion2"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
                         <label class="m-0 form-group col-3">
-                          <strong>Adjuntar documento: </strong>
+                          <strong>Documento: </strong>
                         </label>
-                        <input
-                          type="file"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="documento"
-                          v-validate="'required'"
-                        />
+                        <button type="button" class="btn btn-warning"  @click.prevent="verDocumento(modalDetalle.detalles.documento)">
+                            Descargar
+                        </button>
                       </div>
                       <div class="form-group col-12">
                         <label class="m-0 form-group col-3">
-                          <strong>Adjuntar EE.TT.: </strong>
+                          <strong>EE.TT.: </strong>
                         </label>
-                        <input
-                          type="file"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="eett"
-                          v-validate="'required'"
-                        />
+                        <button type="button" class="btn btn-warning" @click.prevent="verDocumento(modalDetalle.detalles.eett)">
+                            Descargar
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -269,9 +257,6 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">
-                Publicar
-              </button>
               <button
                 type="button"
                 class="btn btn-outline-primary"
@@ -284,11 +269,11 @@
         </div>
       </div>
     </template>
-    <!-- Modal Publicacion -->
-    <template id="publicacion">
+    <!-- Modal Cotizar -->
+    <template id="cotizar">
       <div
         class="modal fade"
-        id="modal-publicacion"
+        id="modal-cotizar"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -519,11 +504,9 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                 listarPedidosDetalle: {
                     data: [],
                     columns: [
-                    { label: "Cantidad Requerida", field: "id" },
-                    { label: "Unidad de Medida", field: "nro_cmn" },
+                    { label: "Cantidad Requerida", field: "cantidad" },
+                    { label: "Unidad de Medida", field: "unidad_medida" },
                     { label: "Descripcion", field: "descripcion" },
-                    { label: "Precio Unitario", field: "tipo" },
-                    { label: "Precio Total", field: "options" },
                     ],
                     total: 0,
                     filtrosBusqueda: {
@@ -578,22 +561,58 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                 }); 
             },
             detalle(row, index) {
+                console.log('row', row)
                 $("#modal-detalle").modal("show");
                 this.limpiarFormulario();
-                console.log(row);
+                axios
+                .get("api/pedidoSiga/listarImprimir/" + row.pedido_siga.id)
+                .then((response) => {
+                console.log(response.data);
+                this.listarPedidosDetalle.data = response.data[0].detalle_pedido_siga;
                 this.modalDetalle = {
-                    titulo: "DETALLE COTIZACIÓN",
+                    titulo: "Solicitud de Cotización",
                     tipo: "ver",
                     detalles: {
-                    id: row.id,
-                    nro_cmn: row.nro_cmn,
-                    descripcion: row.descripcion,
-                    tipo: row.tipo,
+                    id: response.data[0].id,
+                    nro_cmn: response.data[0].nro_cmn,
+                    fecha_pedido: response.data[0].fecha_pedido,
+                    descripcion: response.data[0].descripcion,
+                    ano_eje: response.data[0].ano_eje,
+                    tipo: response.data[0].tipo,
+                    estado: response.data[0].estado,
+                    consolidado: response.data[0].consolidado,
+                    nro_cotizacion: row.nro_cotizacion,
+                    fecha_publicacion: row.publicacion_cotizacion?.fecha_publicacion,
+                    fecha_fin: row.publicacion_cotizacion?.fecha_fin,
+                    descripcion2: row.pedido_siga.descripcion,
+                    documento: row.publicacion_cotizacion?.documento_cotizacion[0]?.url_documento,
+                    eett: row.publicacion_cotizacion?.documento_cotizacion[1]?.url_documento,
                     },
                     deshabilitado: true,
                 };
-                // this.listarPedidoCurso(row.id);
+                })
+                .catch((error) => {
+                console.log(error);
+                this.$toastr.e(error.response.data.message);
+                });
             },
+
+            verDocumento(documento){
+                let $ruta
+                // axios.get('api/documento/abrirDocumento/'+documento)
+                //     .then(response => {if(response)
+                //     $ruta = response.data.ruta; 
+                //     var docDireccion = $ruta+documento+'.pdf'; 
+                // window.open(docDireccion,"resizeable,scrollbar"); 
+                // })
+                //     .catch(function (error){
+                //             toastr['error'](error);                     
+                //         });
+
+                var docDireccion = 'Documentos/'+documento; 
+                window.open(docDireccion,"resizeable,scrollbar"); 
+            },
+            
             formatdate(value) {
                 console.log('entro aqui', value)
                 return moment(value).format("mmmm dd yyyy")
