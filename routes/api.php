@@ -123,4 +123,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('listar', [CotizacionController::class, 'listar']);
   });
 
+  //Pedido SIGA
+  Route::group(['prefix' => 'pedidoSigaPublico'], function () {
+    Route::get('listarImprimir/{id}', [PedidoSigaController::class, 'listarImprimir']);
+
+  });
+
 

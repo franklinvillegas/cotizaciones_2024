@@ -1,6 +1,6 @@
 <template>
     <div class="p-3 pt-5">
-        <div class="col-md-12" style="margin-left: -10px;"><button class="btn btn-outline-secondary float-right"  type="button" @click="nuevoUsuario"> Nuevo </button>
+        <div class="col-md-12" style="margin-left: -10px;">
         <h4 class="text-color-2 mb-3 ">SISTEMA DE COTIZACIONES</h4></div>
         <hr>
         <div class="row p-t">
@@ -11,42 +11,7 @@
                     <option value="">-- Todos --</option>
                 </select>
             </div>
-            <div class="col-md-7">
-                <label for="" class="form-label">Fecha de creación</label>
-                <template>
-                    <date-range-picker
-                        style="width: 100%;height:40px;"
-                        v-model="dateRange"
-                        :locale-data="{
-                            direction: 'ltr',
-                            format: 'yyyy/mm/dd',
-                            separator: ' - ',
-                            applyLabel: 'Apply',
-                            cancelLabel: 'Cancel',
-                            weekLabel: 'W',
-                            customRangeLabel: 'Custom Range',
-                            daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-                            monthNames: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dec'],
-                            firstDay: 0
-                        }"
-                        :auto-apply="true"
-                        :show-dropdowns="true"
-                        :show-week-numbers="false"
-                        :linked-calendars="false"
-                        :single-date-picker="'range'"
-                        :always-show-calendars="true"
-                        :range="false"
-                        :append-to-body="true"
-                        @update="seleccionoFecha"
-                    ></date-range-picker>
-                </template>
-            </div>
         </div>
-        <br>    
-        <button class="btn btn-outline-secondary float-right" type="button" @click="exportar">
-            <i class="fas fa-download"></i>
-            Exportar 
-        </button><br>
         <div class="table-responsive m-t">
             <vue-good-table
             :columns="listaCotizaciones.columns"
@@ -81,7 +46,7 @@
                     </button>
                     <button
                     class="btn btn-danger btn-sm btn-icon"
-                    @click.prevent="publicacion(props.row, props.index)"
+                    @click.prevent="cotizar(props.row, props.index)"
                     data-toggle="tooltip"
                     title="Agregar"
                     >
@@ -91,8 +56,8 @@
             </template>
             </vue-good-table>
         </div>
- <!-- Modal Detalle -->
- <template id="detalle">
+  <!-- Modal Detalle -->
+    <template id="detalle">
       <div
         class="modal fade"
         id="modal-detalle"
@@ -269,7 +234,7 @@
         </div>
       </div>
     </template>
-    <!-- Modal Cotizar -->
+  <!-- Modal Cotizar -->
     <template id="cotizar">
       <div
         class="modal fade"
@@ -316,21 +281,401 @@
                   </div>
                   <div class="row" style="border: 2px solid black">
                     <div class="form-group col-2">
-                      <p class="m-0"><strong>Nro. Cons: </strong> 663</p>
+                      <p class="m-0">
+                        <strong>Nro. Cons: </strong>
+                        <label v-text="modalDetalle.detalles.consolidado"></label>
+                      </p>
                     </div>
                     <div class="form-group col-4">
-                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                      <p class="m-0">
+                        <strong>Fecha: </strong>
+                        <label
+                          v-text="modalDetalle.detalles.fecha_pedido"
+                        ></label>
+                      </p>
                     </div>
                     <div class="form-group col-6">
                       <p class="m-0">
-                        <strong>Documento Pedido: </strong> 000983
+                        <strong>Documento Pedido: </strong>
+                        <label v-text="modalDetalle.detalles.nro_cmn"></label>
                       </p>
                     </div>
                     <div class="form-group col-12">
                       <p class="m-0">
-                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
-                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
-                        CATASTRO
+                        <strong>CONCEPTO: </strong>
+                        <label
+                          v-text="modalDetalle.detalles.descripcion"
+                        ></label>
+                      </p>
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Subir cotización: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-6"
+                          name="cotizacion_archivo"
+                          id="cotizacion_archivo"
+                          accept="application/pdf" v-validate="'required|max:500'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Subir ficha RUC: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-6"
+                          name="cotizacion_ficharuc"
+                          id="cotizacion_ficharuc"
+                          accept="application/pdf" v-validate="'required|max:500'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Subir RNP: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-6"
+                          name="cotizacion_rnp"
+                          id="cotizacion_rnp"
+                          accept="application/pdf" v-validate="'required|max:500'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Subir Anexo 0X: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-6"
+                          name="cotizacion_anexo"
+                          id="cotizacion_anexo"
+                          accept="application/pdf" v-validate="'required|max:500'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Subir CCI: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-6"
+                          name="cotizacion_cci"
+                          id="cotizacion_cci"
+                          accept="application/pdf" v-validate="'required|max:500'"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-group col-12">
+                      <div class="table-responsive">
+                    <vue-good-table
+                      :columns="listarPedidosDetalle.columns"
+                      :rows="listarPedidosDetalle.data"
+                      :sort-options="{
+                        enabled: false,
+                      }"
+                    >
+                    </vue-good-table>
+                  </div>
+                  <br />
+                      <div class="form-group d-flex col-12">
+                        <label class="m-0 form-group col-9">
+                          <strong>TOTAL: </strong>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-group col-3"
+                          data-vv-as=""
+                          placeholder=""
+                          name="total"
+                          v-model="modalDetalle.detalles.total"
+                          v-validate="'required'" disabled
+                        />
+                      </div>
+                      <div class="col-12 d-flex p-0">
+                        <div class="form-group col-6 d-flex">
+                          <label class="m-0 form-group col-6">
+                            <strong>Forma de pago: </strong>
+                          </label>
+                          <input
+                          type="text"
+                          class="form-group col-6"
+                          data-vv-as=""
+                          placeholder=""
+                          name="forma_pago"
+                          v-model="modalDetalle.detalles.forma_pago"
+                          v-validate="'required'" disabled
+                          />
+                        </div>
+                        <div class="form-group col-6 d-flex">
+                          <label class="m-0 form-group col-6">
+                            <strong>Garantía: </strong>
+                          </label>
+                          <input
+                          type="text"
+                          class="form-group col-6"
+                          data-vv-as=""
+                          placeholder=""
+                          name="garantia"
+                          v-model="modalDetalle.detalles.garantia"
+                          v-validate="'required'" disabled
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 d-flex p-0">
+                        <div class="form-group col-6 d-flex">
+                          <label class="m-0 form-group col-6">
+                            <strong>I.G.V: </strong>
+                          </label>
+                          <input
+                          type="text"
+                          class="form-group col-6"
+                          data-vv-as=""
+                          placeholder=""
+                          name="igv"
+                          v-model="modalDetalle.detalles.igv"
+                          v-validate="'required'" disabled
+                          />
+                        </div>
+                        <div class="form-group col-6 d-flex">
+                          <label class="m-0 form-group col-6">
+                            <strong>Plazo de entrega: </strong>
+                          </label>
+                          <input
+                          type="text"
+                          class="form-group col-6"
+                          data-vv-as=""
+                          placeholder=""
+                          name="plazo_entrega"
+                          v-model="modalDetalle.detalles.plazo_entrega"
+                          v-validate="'required'" disabled
+                          />
+                        </div>
+                      </div>
+                      <div class="col-12 d-flex p-0">
+                        <div class="form-group col-6 d-flex">
+                          <label class="m-0 form-group col-6">
+                            <strong>Tipo moneda: </strong>
+                          </label>
+                          <input
+                          type="text"
+                          class="form-group col-6"
+                          data-vv-as=""
+                          placeholder=""
+                          name="tipo_moneda"
+                          v-model="modalDetalle.detalles.tipo_moneda"
+                          v-validate="'required'" disabled
+                          />
+                        </div>
+                        <div class="form-group col-6 d-flex">
+                          <label class="m-0 form-group col-6">
+                            <strong>Validez cotización: </strong>
+                          </label>
+                          <input
+                          type="text"
+                          class="form-group col-6"
+                          data-vv-as=""
+                          placeholder=""
+                          name="validez"
+                          v-model="modalDetalle.detalles.validez"
+                          v-validate="'required'" disabled
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-dismiss="modal"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  <!-- Modal Verificar de usuario login -->
+    <template id="login">
+      <div
+        class="modal fade"
+        id="modal-login"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div id="modal-publicar">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalLogin.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-group mb-4 col-12 d-flex justify-content-center">
+                        <label class="form-group mb-4">
+                          <strong>VERIFICACIÓN DE USUARIO</strong>
+                        </label>
+                      </div>
+                      <div class="form-group col-12 d-flex justify-content-center">
+                        <label class="m-0 form-group col-3">
+                          <strong>Ingrese RUC </strong>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-group form-control d-inline col-3"
+                          data-vv-as=""
+                          placeholder=""
+                          name="usuario"
+                          v-model="modalLogin.user.usuario"
+                        />
+                      </div>
+                      <div class="form-group col-12 d-flex justify-content-center">
+                        <label class="m-0 form-group col-3">
+                          <strong>Contraseña </strong>
+                        </label>
+                        <input
+                          type="password"
+                          class="form-group form-control d-inline col-3"
+                          data-vv-as=""
+                          placeholder=""
+                          name="ruc"
+                          v-model="modalLogin.user.password"
+                        />
+                      </div>
+                      <div class="form-group col-12 d-flex justify-content-center">
+                        <label class="m-0 form-group col-3">
+                        </label>
+                        <button type="button" class="btn btn-warning col-3 col mb-4" @click.prevent="acceder(modalLogin.user)">
+                            Acceder
+                        </button>
+                      </div>
+                      <div class="form-group col-12 d-flex justify-content-center">
+                        <label class="m-0 form-group col-3">
+                          <strong>¿Eres nuevo usuario? </strong>
+                        </label>
+                        <button type="button" class="btn btn-primary col-3 col" @click.prevent="verDocumento(modalDetalle.detalles.eett)">
+                            Registrate aquí
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-dismiss="modal"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  <!-- Modal Verificar de usuario registrar -->
+    <template id="registrar">
+      <div
+        class="modal fade"
+        id="modal-registrar"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div id="modal-publicar">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalDetalle.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Unidad Ejecutora: </strong>
+                        GERENCIA SUB REGIONAL CHANKA
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Nro. de Identificacion: </strong>
+                        000748
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row" style="border: 2px solid black">
+                    <div class="form-group col-2">
+                      <p class="m-0">
+                        <strong>Nro. Cons: </strong>
+                        <label v-text="modalDetalle.detalles.consolidado"></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-4">
+                      <p class="m-0">
+                        <strong>Fecha: </strong>
+                        <label
+                          v-text="modalDetalle.detalles.fecha_pedido"
+                        ></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Documento Pedido: </strong>
+                        <label v-text="modalDetalle.detalles.nro_cmn"></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>CONCEPTO: </strong>
+                        <label
+                          v-text="modalDetalle.detalles.descripcion"
+                        ></label>
                       </p>
                     </div>
                   </div>
@@ -356,8 +701,9 @@
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="numCotizacion"
-                          v-validate="'required'"
+                          name="nro_cotizacion"
+                          v-model="modalDetalle.detalles.nro_cotizacion"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
@@ -365,20 +711,13 @@
                           <strong>Fecha de Publicacion: </strong>
                         </label>
                         <input
-                          type="date"
+                          type="datetime-local"
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="fechaPublicacion"
-                          v-validate="'required'"
-                        />
-                        <input
-                          type="time"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="horaPublicacion"
-                          v-validate="'required'"
+                          name="fecha_publicacion"
+                          v-model="modalDetalle.detalles.fecha_publicacion"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
@@ -386,20 +725,13 @@
                           <strong>Fecha de Finalizacion: </strong>
                         </label>
                         <input
-                          type="date"
+                          type="datetime-local"
                           class="form-group col-3"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="fechaFizalizacion"
-                          v-validate="'required'"
-                        />
-                        <input
-                          type="time"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="fechaFizalizacion"
-                          v-validate="'required'"
+                          v-model="modalDetalle.detalles.fecha_fin"
+                          name="fecha_fin"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
@@ -407,39 +739,30 @@
                           <strong>Descripción: </strong>
                         </label>
                         <input
-                          type="date"
-                          class="form-group col-3"
+                          type="text"
+                          class="form-group col-6"
                           data-vv-as="00000"
                           placeholder="00000"
-                          name="descripcion"
-                          v-validate="'required'"
+                          v-model="modalDetalle.detalles.descripcion2"
+                          name="descripcion2"
+                          v-validate="'required'" disabled
                         />
                       </div>
                       <div class="form-group col-12">
                         <label class="m-0 form-group col-3">
-                          <strong>Adjuntar documento: </strong>
+                          <strong>Documento: </strong>
                         </label>
-                        <input
-                          type="file"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="documento"
-                          v-validate="'required'"
-                        />
+                        <button type="button" class="btn btn-warning"  @click.prevent="verDocumento(modalDetalle.detalles.documento)">
+                            Descargar
+                        </button>
                       </div>
                       <div class="form-group col-12">
                         <label class="m-0 form-group col-3">
-                          <strong>Adjuntar EE.TT.: </strong>
+                          <strong>EE.TT.: </strong>
                         </label>
-                        <input
-                          type="file"
-                          class="form-group col-3"
-                          data-vv-as="00000"
-                          placeholder="00000"
-                          name="eett"
-                          v-validate="'required'"
-                        />
+                        <button type="button" class="btn btn-warning" @click.prevent="verDocumento(modalDetalle.detalles.eett)">
+                            Descargar
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -447,9 +770,6 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">
-                Publicar
-              </button>
               <button
                 type="button"
                 class="btn btn-outline-primary"
@@ -473,6 +793,7 @@ import Multiselect from "vue-multiselect";
 import DateRangePicker from 'vue2-daterange-picker'
 
 import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+import Crypt from "../../services/Crypt";
 
     export default {
         name:'Usuarios',
@@ -537,12 +858,22 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                     options: "",
                     },
                 },
+                modalLogin: {
+                    tipo: "",
+                    titulo: "",
+                    user: {
+                     usuario: "",
+                     password: "",
+                    },
+                },
                 dateRange: {
                     startDate: '',
                     endDate: '', //endDate: '2019-12-28',
                 },
                 comboOcupacion:[],
                 ocupacionesSel: null,
+                rowSelect:'',
+                indexSelect:'',
             }
         },
         created(){
@@ -565,7 +896,7 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
                 $("#modal-detalle").modal("show");
                 this.limpiarFormulario();
                 axios
-                .get("api/pedidoSiga/listarImprimir/" + row.pedido_siga.id)
+                .get("api/pedidoSigaPublico/listarImprimir/" + row.pedido_siga.id)
                 .then((response) => {
                 console.log(response.data);
                 this.listarPedidosDetalle.data = response.data[0].detalle_pedido_siga;
@@ -611,6 +942,94 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
 
                 var docDireccion = 'Documentos/'+documento; 
                 window.open(docDireccion,"resizeable,scrollbar"); 
+            },
+
+            cotizar(row, index) {
+              this.rowSelect = row;
+              this.indexSelect = index;
+              if(!this.$store.getters.getAuthUser('identificador')){
+                console.log('no está autenticado')
+                $("#modal-login").modal("show");
+                this.modalLogin = {
+                    titulo: "Sistema de cotización",
+                    tipo: "ver",
+                    user: {
+                    ruc: "",
+                    password: "",
+                    },
+                    deshabilitado: true,
+                };
+              } else {
+                console.log('está autenticado')
+                console.log('row', row)
+                $("#modal-cotizar").modal("show");
+                this.limpiarFormulario();
+                axios
+                .get("api/pedidoSigaPublicar/listarImprimir/" + row.pedido_siga.id)
+                .then((response) => {
+                console.log(response.data);
+                this.listarPedidosDetalle.data = response.data[0].detalle_pedido_siga;
+                this.modalDetalle = {
+                    titulo: "Solicitud de Cotización",
+                    tipo: "ver",
+                    detalles: {
+                    id: response.data[0].id,
+                    nro_cmn: response.data[0].nro_cmn,
+                    fecha_pedido: response.data[0].fecha_pedido,
+                    descripcion: response.data[0].descripcion,
+                    ano_eje: response.data[0].ano_eje,
+                    tipo: response.data[0].tipo,
+                    estado: response.data[0].estado,
+                    consolidado: response.data[0].consolidado,
+                    nro_cotizacion: row.nro_cotizacion,
+                    fecha_publicacion: row.publicacion_cotizacion?.fecha_publicacion,
+                    fecha_fin: row.publicacion_cotizacion?.fecha_fin,
+                    descripcion2: row.pedido_siga.descripcion,
+                    documento: row.publicacion_cotizacion?.documento_cotizacion[0]?.url_documento,
+                    eett: row.publicacion_cotizacion?.documento_cotizacion[1]?.url_documento,
+                    },
+                    deshabilitado: true,
+                };
+                })
+                .catch((error) => {
+                console.log(error);
+                this.$toastr.e(error.response.data.message);
+                });
+              }
+            },
+
+            acceder(){
+              axios.post("api/auth/admin", this.modalLogin.user)
+              .then((response) => {
+                  this.$toastr.s(response.data.message);
+                  localStorage.setItem("token_laravel", response.data.token_laravel);
+                  axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token_laravel");
+                  axios.get("api/auth/user")
+                  .then((response) => {
+                      console.log(response);
+                      let usuario = response.data;
+                      this.$store.dispatch('setAuthUserDetail',{//aqui extrae la info el usuario y lo asigno a la variable
+                          identificador: Crypt.encrypt(usuario.id),
+                          email: usuario.email,
+                          nombres: usuario.persona.nombres,
+                          apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
+                          usuario: usuario.usuario,
+                          avatar: usuario.avatar,
+                          rol: usuario.tipo_usuario
+                      });
+                      $("#modal-login").modal('hide');
+                      console.log('deberia ingresar')
+                      this.cotizar(this.rowSelect, this.indexSelect);
+                  })
+                  .catch((error) => {
+                      console.log(error);
+                      this.$toastr.e(error.response.data.message);
+                  });
+              })
+              .catch((error) => {
+                  console.log(error);
+                  this.$toastr.e(error.response.data.message);
+              });
             },
             
             formatdate(value) {
