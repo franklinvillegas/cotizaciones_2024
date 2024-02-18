@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cotizacion;
 use App\Models\PublicacionCotizacion;
 use App\Models\DocumentoCotizacion;
+use App\Models\CotizacionPropuesta;
 use Illuminate\Support\Facades\DB;
 
 
@@ -14,9 +15,20 @@ class CotizacionController extends Controller
     // listar cotizaciones
 
       public function listar(){
-        $lista = Cotizacion::select()->with(['pedidoSiga:id,nro_cmn,descripcion,tipo','publicacionCotizacion','publicacionCotizacion.documentoCotizacion']);
+        $lista = Cotizacion::select()->with(['pedidoSiga:id,nro_cmn,descripcion,tipo,fecha_pedido,consolidado','publicacionCotizacion','publicacionCotizacion.documentoCotizacion']);
         return $lista->get();
     }
+    public function listarOfertas($id){
+      $lista = PublicacionCotizacion::select()->with(['cotizacionPropuesta.proveedor'])->where('id',$id);
+
+      return $lista->get();
+    }
+    public function listarOfertasComparar($id){
+      $lista = PublicacionCotizacion::select()->with(['cotizacionPropuesta.proveedor'])->where('id',$id);
+
+      return $lista->get();
+    }
+    
       public function publicar(Request $request){
          try {
           $nuevoCotizacion = new Cotizacion();

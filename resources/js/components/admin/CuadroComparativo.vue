@@ -1,41 +1,14 @@
 <template>
   <div class="p-3 pt-5">
-    <div class="col-md-12" style="margin-left: -15px">
-      <button
-        class="btn btn-outline-secondary float-right"
-        type="button"
-        @click="nuevo"
-      >
-        Nuevo
-      </button>
-      <h4 class="text-color-2 mb-3">Cuadro comparativo</h4>
+    <div class="col-md-12" style="margin-left: -10px">
+      <h4 class="text-color-2 mb-3">CUADRO COMPARATIVO</h4>
     </div>
-    <br />
-    <!--  <div class="row justify-content-md-center">
-           <div class="col-md-5">
-                <div class="form-group">
-                    <label for="">Tipo</label>
-                    <select name="" class="form-control" v-model="listarGrados.filtrosBusqueda.tipo" @change="listarGrado" >
-                        <option value="">-- Todos -- </option>
-                        <option value="1">Inicio</option>
-                        <option value="2">Pregunta</option>
-                        <option value="3">Publicación</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <hr> -->
+    <hr />
 
-    <!-- <hr>
-        <button class="btn btn-outline-secondary float-right" type="button" @click="exportar">
-            <i class="fas fa-download"></i>
-            Exportar
-        </button>
-        <br> -->
-    <div class="table-responsive">
+    <div class="table-responsive m-t">
       <vue-good-table
-        :columns="listarGrados.columns"
-        :rows="listarGrados.data"
+        :columns="listaCotizaciones.columns"
+        :rows="listaCotizaciones.data"
         :search-options="{
           enabled: true,
           placeholder: 'Buscar en la tabla',
@@ -52,48 +25,27 @@
         }"
       >
         <template slot="table-row" slot-scope="props">
+          <!-- <span v-if="props.column.field == 'publicacion_cotizacion.fecha_fin'">
+                    {{ formatdate(props.row.publicacion_cotizacion.fecha_fin) }}
+                </span> -->
           <span v-if="props.column.field == 'options'">
             <button
-              class="btn btn-outline-success btn-sm btn-icon"
-              @click.prevent="agregarCurso(props.row, props.index)"
+              class="btn btn-success btn-sm btn-icon"
+              @click.prevent="cuadroComparativo(props.row, props.index)"
               data-toggle="tooltip"
               title="Agregar"
             >
-              <i class="fas fa-plus"></i> Cursos
-            </button>
-            <button
-              class="btn btn-outline-secondary btn-sm btn-icon"
-              @click.prevent="ver(props.row, props.index)"
-              data-toggle="tooltip"
-              title="Ver"
-            >
-              <i class="fas fa-eye"></i>
-            </button>
-            <button
-              class="btn btn-outline-info btn-sm btn-icon"
-              @click.prevent="editar(props.row, props.index)"
-              data-toggle="tooltip"
-              title="Editar"
-            >
-              <i class="fas fa-pencil-alt"></i>
-            </button>
-            <button
-              class="btn btn-outline-danger btn-sm btn-icon"
-              @click.prevent="eliminar(props.row, props.index)"
-              data-toggle="tooltip"
-              title="Eliminar"
-            >
-              <i class="fas fa-trash-alt"></i>
+              C. C.
             </button>
           </span>
         </template>
       </vue-good-table>
     </div>
-    <!-- Modal -->
-    <template>
+    <!-- Modal cuadroComparativo -->
+    <template id="cuadroComparativo">
       <div
         class="modal fade"
-        id="modal-grado"
+        id="modal-cuadroComparativo"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -101,64 +53,87 @@
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5
-                class="modal-title"
-                id="exampleModalLongTitle"
-                v-text="modal.titulo"
-              ></h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form class="form" data-vv-scope="form_registro">
-                <div class="form-group">
-                  <p class="m-0">
-                    <strong>Nivel</strong>
-                  </p>
-                  <select
-                    name="nivel"
-                    class="form-control"
-                    v-model="modal.grado.id_nivel"
-                    data-vv-as="Nivel"
-                    placeholder="Seleccione Nivel"
-                    v-validate="'required'"
-                  >
-                    <option
-                      v-for="row in listarNiveles"
-                      :key="row.id"
-                      :value="row.id"
-                      v-text="row.nombre"
-                    ></option>
-                  </select>
-                  <span class="text-danger">{{
-                    errors.first("form_registro.nivel")
-                  }}</span>
-                </div>
-                <div class="form-group">
-                  <p class="m-0">
-                    <strong>Grado</strong>
-                  </p>
-                  <input
-                    type="text"
-                    v-model="modal.grado.grado"
-                    class="form-control"
-                    data-vv-as="Grado"
-                    placeholder="Grado"
-                    name="grado"
-                    v-validate="'required|max:30'"
-                  />
-                  <span class="text-danger">{{
-                    errors.first("form_registro.grado")
-                  }}</span>
-                </div>
-              </form>
+            <div id="modal-publicar">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalCuadroComparativo.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  
+                  <div class="row" >
+                    <div class="form-group col-2">
+                      <p class="m-0">
+                        <strong>Nro. Cons: </strong>
+                        <label
+                          v-text="modalCuadroComparativo.detalles.consolidado"
+                        ></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-4">
+                      <p class="m-0">
+                        <strong>Fecha: </strong>
+                        <label
+                          v-text="modalCuadroComparativo.detalles.fecha_pedido"
+                        ></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Documento CMN: </strong>
+                        <label v-text="modalCuadroComparativo.detalles.nro_cmn"></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>CONCEPTO: </strong>
+                        <label
+                          v-text="modalCuadroComparativo.detalles.descripcion"
+                        ></label>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <vue-good-table
+                      :columns="listarProveedoresCuadroComparativo.columns"
+                      :rows="listarProveedoresCuadroComparativo.data"
+                      :sort-options="{
+                        enabled: false,
+                      }"
+                    >
+                    <template slot="table-row" slot-scope="props">
+          <!-- <span v-if="props.column.field == 'publicacion_cotizacion.fecha_fin'">
+                    {{ formatdate(props.row.publicacion_cotizacion.fecha_fin) }}
+                </span> -->
+          <span v-if="props.column.field == 'options'">
+            <button
+              class="btn btn-success btn-sm btn-icon"
+              @click.prevent="verDetalle(props.row, props.index)"
+              data-toggle="tooltip"
+              title="Agregar"
+            >
+              Detalles
+            </button>
+          </span>
+        </template>
+                    </vue-good-table>
+                  </div>
+                  <br />
+                  
+                </form>
+              </div>
             </div>
             <div class="modal-footer">
               <button
@@ -167,33 +142,17 @@
                 data-dismiss="modal"
               >
                 Cerrar
-              </button>
-              <button
-                type="button"
-                v-if="modal.tipo == 'nuevo'"
-                class="btn btn-primary"
-                @click="guardar"
-              >
-                Guardar
-              </button>
-              <button
-                type="button"
-                v-else-if="modal.tipo == 'editar'"
-                class="btn btn-primary"
-                @click="modificar"
-              >
-                Actualizar
               </button>
             </div>
           </div>
         </div>
       </div>
     </template>
-    <!-- Modal agregar Cursos -->
-    <template>
+    <!-- Modal Ver detalle -->
+    <template id="detalles">
       <div
         class="modal fade"
-        id="modal-agregarCurso"
+        id="modal-detalles"
         tabindex="-1"
         role="dialog"
         aria-labelledby="exampleModalCenterTitle"
@@ -201,156 +160,182 @@
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5
-                class="modal-title"
-                id="exampleModalLongTitle"
-                v-text="modal.titulo"
-              ></h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form class="form" data-vv-scope="form_registro_grado_curso">
-                <div class="row">
-                  <div class="form-group col-6">
-                    <p class="m-0">
-                      <strong>Nivel</strong>
-                    </p>
-                    <select
-                      name="id_nivel"
-                      disabled
-                      class="form-control"
-                      v-model="modalAgregar.grado.id_nivel"
-                      data-vv-as="id_nivel"
-                      placeholder="Seleccione Nivel"
-                      v-validate="'required'"
+            <div id="modal-publicar">
+              <div class="modal-header">
+                <h5
+                  align="center"
+                  class="modal-title"
+                  id="exampleModalLongTitle"
+                  v-text="modalCuadroComparativo.titulo"
+                ></h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="form" data-vv-scope="form_registro_grado_curso">
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Unidad Ejecutora: </strong>
+                        GERENCIA SUB REGIONAL CHANKA
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>Nro. de Identificacion: </strong>
+                        000748
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row" style="border: 2px solid black">
+                    <div class="form-group col-2">
+                      <p class="m-0">
+                        <strong>Nro. Cons asdasf: </strong>
+                        <label v-text="modalCuadroComparativo.detalles.id"></label>
+                      </p>
+                    </div>
+                    <div class="form-group col-4">
+                      <p class="m-0"><strong>Fecha: </strong> 01/05/2024</p>
+                    </div>
+                    <div class="form-group col-6">
+                      <p class="m-0">
+                        <strong>Documento Pedido: </strong> 000983
+                      </p>
+                    </div>
+                    <div class="form-group col-12">
+                      <p class="m-0">
+                        <strong>CONCEPTO: </strong> ADQUISICION DE MATERIAL DE
+                        ESCRITORIO PARA LA SUB GERENCIA PLANEAMIENTO URBANO
+                        CATASTRO
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <vue-good-table
+                      :columns="listarPedidosCuadroComparativo.columns"
+                      :rows="listarPedidosCuadroComparativo.data"
+                      :sort-options="{
+                        enabled: false,
+                      }"
                     >
-                      <option
-                        v-for="row in listarNiveles"
-                        :key="row.id"
-                        :value="row.id"
-                        v-text="row.nombre"
-                      ></option>
-                    </select>
+                    </vue-good-table>
                   </div>
-                  <div class="form-group col-6">
-                    <p class="m-0">
-                      <strong>Grado</strong>
-                    </p>
-                    <input
-                      type="text"
-                      v-model="modalAgregar.grado.grado"
-                      disabled
-                      class="form-control"
-                      data-vv-as="Nombre"
-                      placeholder="Nombre"
-                      name="grado"
-                      :id="modalAgregar.grado.id"
-                      v-validate="'required'"
-                    />
+                  <br />
+                  <div class="row">
+                    <div class="form-group col-12">
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Nro de Cotización: </strong>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="numCotizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Publicacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaPublicacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="horaPublicacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Fecha de Finalizacion: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                        <input
+                          type="time"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="fechaFizalizacion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Descripción: </strong>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="descripcion"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar documento: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="documento"
+                          v-validate="'required'"
+                        />
+                      </div>
+                      <div class="form-group col-12">
+                        <label class="m-0 form-group col-3">
+                          <strong>Adjuntar EE.TT.: </strong>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-group col-3"
+                          data-vv-as="00000"
+                          placeholder="00000"
+                          name="eett"
+                          v-validate="'required'"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div class="form-group col-10">
-                    <p class="m-0">
-                      <strong>Cursos</strong>
-                    </p>
-                    <select
-                      name="Curso"
-                      class="form-control"
-                      v-model="modalAgregar.grado.id_curso"
-                      data-vv-as="Curso"
-                      placeholder="Seleccione Curso"
-                      v-validate="'required'"
-                    >
-                      <option
-                        v-for="row in listarCursos"
-                        :key="row.id"
-                        :value="row.id"
-                        v-text="row.nombre"
-                      ></option>
-                    </select>
-                    <span class="text-danger">{{
-                      errors.first("form_registro_grado_curso.nivel")
-                    }}</span>
-                  </div>
-                  <div class="form-group col-2">
-                    <p class="m-0 col-12">
-                      <strong> &nbsp;</strong>
-                    </p>
-                    <button
-                      type="button"
-                      class="btn btn-success"
-                      @click="guardarAgregarCurso"
-                    >
-                      Agregar
-                    </button>
-                  </div>
-                </div>
-                <div class="table-responsive">
-                  <vue-good-table
-                    :columns="listarGradoCursos.columns"
-                    :rows="listarGradoCursos.data"
-                    :search-options="{
-                      enabled: true,
-                      placeholder: 'Buscar en la tabla',
-                    }"
-                    :pagination-options="{
-                      enabled: true,
-                      mode: 'pages',
-                      nextLabel: 'Sig',
-                      prevLabel: 'Ant',
-                      rowsPerPageLabel: 'Registros por página',
-                      ofLabel: 'de',
-                      pageLabel: 'Página', // for 'pages' mode
-                      allLabel: 'Todo',
-                    }"
-                  >
-                    <template slot="table-row" slot-scope="props">
-                      <span v-if="props.column.field == 'options'">
-
-                        <button
-                          class="btn btn-outline-danger btn-sm btn-icon"
-                          @click.prevent="eliminarGradoCurso(props.row, props.index)"
-                          data-toggle="tooltip"
-                          title="Eliminar"
-                        >
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
-                      </span>
-                    </template>
-                  </vue-good-table>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-primary">Publicar</button>
               <button
                 type="button"
                 class="btn btn-outline-primary"
                 data-dismiss="modal"
               >
                 Cerrar
-              </button>
-              <button
-                type="button"
-                v-if="modal.tipo == 'nuevo'"
-                class="btn btn-primary"
-                @click="guardar"
-              >
-                Guardar
-              </button>
-              <button
-                type="button"
-                v-else-if="modal.tipo == 'editar'"
-                class="btn btn-primary"
-                @click="modificar"
-              >
-                Actualizar
               </button>
             </div>
           </div>
@@ -363,17 +348,47 @@
 <script>
 import Helper from "../../services/Helper";
 
+import Multiselect from "vue-multiselect";
+import DateRangePicker from "vue2-daterange-picker";
+
+import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
+
 export default {
-  name: "Ayudas",
-  components: {},
+  name: "Usuarios",
+  components: {
+    Multiselect,
+    DateRangePicker,
+  },
   data() {
     return {
-      listarGrados: {
+      listaCotizaciones: {
         data: [],
         columns: [
-          { label: "Grado", field: "grado" },
-          { label: "Nivel", field: "nivel.nombre" },
+          { label: "ID", field: "id" },
+          { label: "CMN", field: "pedido_siga.nro_cmn" },
+          { label: "Descripción", field: "pedido_siga.descripcion" },
+          { label: "Tipo", field: "pedido_siga.tipo" },
           { label: "Opciones", field: "options" },
+        ],
+        total: 0,
+        filtrosBusqueda: {
+          tipo: "",
+          ocupacion: "",
+          fechaIni: "",
+          fechaFin: "",
+          orden: "asc",
+          ordenPor: "id",
+          regPagina: "10",
+        },
+        deshabilitarEdicion: false,
+      },listarPedidosDetalle: {
+        data: [],
+        columns: [
+          { label: "Cantidad Requerida", field: "cantidad" },
+          { label: "Unidad de Medida", field: "unidad_medida" },
+          { label: "Descripcion", field: "descripcion" },
+          { label: "Precio Unitario", field: "precio_unitario" },
+          { label: "Precio Total", field: "precio_total" },
         ],
         total: 0,
         filtrosBusqueda: {
@@ -384,10 +399,11 @@ export default {
         },
         deshabilitarEdicion: false,
       },
-      listarGradoCursos: {
+      listarProveedoresCuadroComparativo: {
         data: [],
         columns: [
-          { label: "Curso", field: "curso.nombre" },
+          { label: "RUC", field: "proveedor.ruc" },
+          { label: "Razon Social", field: "proveedor.razon_social" },
           { label: "Opciones", field: "options" },
         ],
         total: 0,
@@ -398,122 +414,129 @@ export default {
           regPagina: "10",
         },
         deshabilitarEdicion: false,
+      },listarPedidosCuadroComparativo: {
+        data: [],
+        columns: [
+          { label: "Cantidad Requerida", field: "cantidad" },
+          { label: "Unidad de Medida", field: "unidad_medida" },
+          { label: "Descripcion", field: "descripcion" },
+        ],
+        total: 0,
+        filtrosBusqueda: {
+          tipo: "",
+          orden: "asc",
+          ordenPor: "id",
+          regPagina: "10",
+        },
+        deshabilitarEdicion: false,
       },
-      listarNiveles: [],
-      listarCursos: [],
-      deshabilitado: false,
-      modal: {
+      desabilitado: false,
+      botonesActive: {
+        todos: true,
+        misMenciones: false,
+      },
+      mensaje: {
+        mensaje: "",
+      },
+      modalCuadroComparativo: {
         tipo: "",
         titulo: "",
         nivelID: null,
-        grado: {
-          grado: "",
-          id_nivel: "",
+        detalles: {
+          id: "",
+          nro_cmn: "",
+          descripcion: "",
+          tipo: "",
+          options: "",
         },
       },
-      modalAgregar: {
-        tipo: "",
-        titulo: "",
-        nivelID: null,
-        grado: {
-          grado: "",
-          id_nivel: "",
-          id_curso:"",
-          cursos: [],
-        },
+      dateRange: {
+        startDate: "",
+        endDate: "", //endDate: '2019-12-28',
       },
+      comboOcupacion: [],
+      ocupacionesSel: null,
     };
   },
   created() {
-    this.listarGrado();
-    this.listarNivel();
+    this.listarCotizaciones();
   },
   methods: {
-    listarGrado() {
+    listarCotizaciones() {
       axios
         .get(
-          "api/grado/listar" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
+          "api/cotizacionPublico/listar" +
+            Helper.getFilterURL(this.listaCotizaciones.filtrosBusqueda)
         )
         .then((response) => {
-          let data = response.data;
-          this.listarGrados.data = data;
-          console.log(this.listarGrados);
+          this.listaCotizaciones.data = response.data;
         })
         .catch((error) => {
           console.log(error);
           this.$toastr.e(error.response.data.message);
         });
     },
-    listarNivel() {
+    cuadroComparativo(row, index) {
+      console.log("row", row);
+      $("#modal-cuadroComparativo").modal("show");
+      this.limpiarFormulario();
       axios
-        .get(
-          "api/nivel/listar" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
-        )
+        .get("api/cotizacion/listarOfertasComparar/" + row.publicacion_cotizacion.id)
         .then((response) => {
-          let data = response.data;
-          this.listarNiveles = data;
+          console.log(response.data);
+           this.listarProveedoresCuadroComparativo.data =  response.data[0].cotizacion_propuesta;
+           console.log(this.listarProveedoresCuadroComparativo.data);
+          this.modalCuadroComparativo = {
+            titulo: "Proveedores que ofertaron",
+            tipo: "ver",
+            detalles: {
+              nro_cmn: row.pedido_siga.nro_cmn,
+              fecha_pedido: row.pedido_siga.fecha_pedido,
+              descripcion: row.pedido_siga.descripcion,
+              consolidado: row.pedido_siga.consolidado,
+            },
+            deshabilitado: true,
+          };
         })
         .catch((error) => {
           console.log(error);
           this.$toastr.e(error.response.data.message);
         });
     },
-    listarCurso() {
+    verDetalle(row, index) {
+      console.log("row", row);
+      $("#modal-detalles").modal("show");
+      this.limpiarFormulario();
       axios
-        .get(
-          "api/curso/listar" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
-        )
+        .get("api/pedidoSiga/listarImprimir/" + row.pedido_siga.id)
         .then((response) => {
-          let data = response.data;
-          this.listarCursos = data;
-        })
-        .catch((error) => {
-          console.log(error);
-          this.$toastr.e(error.response.data.message);
-        });
-    },
-    listarCursoPrimaria() {
-      axios
-        .get(
-          "api/curso/listar_primaria" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
-        )
-        .then((response) => {
-          let data = response.data;
-          this.listarCursos = data;
-        })
-        .catch((error) => {
-          console.log(error);
-          this.$toastr.e(error.response.data.message);
-        });
-    },
-    listarCursoSecundaria() {
-      axios
-        .get(
-          "api/curso/listar_secundaria" +
-            Helper.getFilterURL(this.listarGrados.filtrosBusqueda)
-        )
-        .then((response) => {
-          let data = response.data;
-          this.listarCursos = data;
-        })
-        .catch((error) => {
-          console.log(error);
-          this.$toastr.e(error.response.data.message);
-        });
-    },
-    listarGradoCurso(id_grado) {
-      axios
-        .get(
-          "api/grado_curso/listar/" +id_grado
-        )
-        .then((response) => {
-          let data = response.data;
-          console.log("sadasd",data);
-          this.listarGradoCursos.data = data;
+          console.log(response.data);
+          this.listarPedidosCuadroComparativo.data =
+            response.data[0].detalle_pedido_siga;
+          this.modalCuadroComparativo = {
+            titulo: "Solicitud de Cotización",
+            tipo: "ver",
+            detalles: {
+              id: response.data[0].id,
+              nro_cmn: response.data[0].nro_cmn,
+              fecha_pedido: response.data[0].fecha_pedido,
+              descripcion: response.data[0].descripcion,
+              ano_eje: response.data[0].ano_eje,
+              tipo: response.data[0].tipo,
+              estado: response.data[0].estado,
+              consolidado: response.data[0].consolidado,
+              nro_cotizacion: row.nro_cotizacion,
+              fecha_publicacion: row.publicacion_cotizacion?.fecha_publicacion,
+              fecha_fin: row.publicacion_cotizacion?.fecha_fin,
+              descripcion2: row.pedido_siga.descripcion,
+              documento:
+                row.publicacion_cotizacion?.documento_cotizacion[0]
+                  ?.url_documento,
+              eett: row.publicacion_cotizacion?.documento_cotizacion[1]
+                ?.url_documento,
+            },
+            deshabilitado: true,
+          };
         })
         .catch((error) => {
           console.log(error);
@@ -521,95 +544,158 @@ export default {
         });
     },
 
-    limpiarFormulario() {
-      this.modal = {
-        titulo: "",
-        nivelID: null,
-        grado: {
-          grado: "",
-        },
-        deshabilitado: false,
-      };
-      this.$validator.reset();
+    verDocumento(documento) {
+      let $ruta;
+      // axios.get('api/documento/abrirDocumento/'+documento)
+      //     .then(response => {if(response)
+      //     $ruta = response.data.ruta;
+      //     var docDireccion = $ruta+documento+'.pdf';
+      // window.open(docDireccion,"resizeable,scrollbar");
+      // })
+      //     .catch(function (error){
+      //             toastr['error'](error);
+      //         });
+
+      var docDireccion = "Documentos/" + documento;
+      window.open(docDireccion, "resizeable,scrollbar");
     },
-    nuevo() {
-      $("#modal-grado").modal("show");
+
+    formatdate(value) {
+      console.log("entro aqui", value);
+      return moment(value).format("mmmm dd yyyy");
+    },
+    formatauthority(value) {
+      return `item ${value}`;
+    },
+
+    seleccionoFecha(evt) {
+      this.listaCotizaciones.filtrosBusqueda.fechaIni =
+        Helper.formatearSoloFechaGenerico(evt.startDate);
+      this.listaCotizaciones.filtrosBusqueda.fechaFin =
+        Helper.formatearSoloFechaGenerico(evt.endDate);
+      this.listarCotizaciones();
+    },
+    seleccionoOcupacion() {
+      this.listaCotizaciones.filtrosBusqueda.ocupacion = this.ocupacionesSel
+        .map((elem) => elem.id)
+        .join(",");
+      this.listarCotizaciones();
+    },
+    limpiarFormulario() {
+      (this.modal = {
+        tipo: "",
+        titulo: "",
+        usuarioID: null,
+        usuario: {
+          email: "",
+          nombres: "",
+          num_docid: "",
+          apellidos: "",
+          password: "",
+          tipo_usuario: "",
+          editarPassword: true,
+          es_admin: true,
+        },
+      }),
+        this.$validator.reset();
+    },
+    nuevoUsuario() {
+      $("#modal-administrador").modal("show");
       this.limpiarFormulario();
-      this.modal.titulo = "Nuevo grado";
+      this.modal.titulo = "Nuevo usuario";
       this.modal.tipo = "nuevo";
     },
     ver(row, index) {
-      $("#modal-grado").modal("show");
-      this.limpiarFormulario();
-      this.modal = {
-        titulo: "Ver grado",
-        tipo: "ver",
-        grado: {
-          grado: row.grado,
-          id_nivel: row.id_nivel,
-        },
-        deshabilitado: true,
-      };
-    },
-    agregarCurso(row, index) {
-      $("#modal-agregarCurso").modal("show");
-      this.limpiarFormulario();
-      if (row.id_nivel == 1) this.listarCursoPrimaria();
-      else this.listarCursoSecundaria();
-      this.modalAgregar = {
-        titulo: "Ver grado y cursos",
-        tipo: "ver",
-        grado: {
-          grado: row.grado,
-          id_grado:row.id,
-          id_nivel: row.id_nivel,
-          id_curso:'',
-          cursos: [],
-        },
-        deshabilitado: true,
-      };
-      this.listarGradoCurso(row.id);
-
+      if (row.es_admin == true) {
+        $("#modal-administrador").modal("show");
+        this.limpiarFormulario();
+        this.modal = {
+          tipo: "ver",
+          titulo: "Editar usuario",
+          usuarioID: row.id,
+          usuario: {
+            email: row.email,
+            nombres: row.persona.nombres,
+            apellidos:
+              row.persona.apellido_pat + " " + row.persona.apellido_pat,
+            tipo_usuario: row.tipo_usuario,
+            num_docid: row.persona.num_docid,
+            es_admin: true,
+            editarPassword: true,
+          },
+        };
+      } else {
+        $("#modal-usuario").modal("show");
+        this.limpiarFormulario();
+        this.modalUsuario = {
+          tipo: "ver",
+          titulo: "Editar usuario",
+          usuarioID: row.id,
+          usuarioOcupacionSel: this.comboOcupacion.find(
+            (item) => item.id == row.ocupacion_id
+          ),
+          usuario: {
+            email: row.email,
+            nombres: row.persona.nombres,
+            apellidos:
+              row.persona.apellido_pat + " " + row.persona.apellido_pat,
+            tipo_usuario: row.tipo_usuario,
+            num_docid: row.persona.num_docid,
+            es_admin: true,
+            editarPassword: true,
+          },
+        };
+      }
     },
     editar(row, index) {
-      $("#modal-grado").modal("show");
-      this.limpiarFormulario();
-      this.modal = {
-        titulo: "Editar grado",
-        tipo: "editar",
-        nivelID: row.id,
-        grado: {
-          grado: row.grado,
-          id_nivel: row.id_nivel,
-        },
-        deshabilitado: false,
-      };
+      if (row.es_admin == true) {
+        $("#modal-administrador").modal("show");
+        this.limpiarFormulario();
+        this.modal = {
+          tipo: "editar",
+          titulo: "Editar usuario",
+          usuarioID: row.id,
+          usuario: {
+            email: row.email,
+            nombres: row.persona.nombres,
+            apellidos:
+              row.persona.apellido_pat + " " + row.persona.apellido_pat,
+            tipo_usuario: row.tipo_usuario,
+            num_docid: row.persona.num_docid,
+            es_admin: true,
+            editarPassword: true,
+          },
+        };
+      } else {
+        $("#modal-usuario").modal("show");
+        this.limpiarFormulario();
+        this.modalUsuario = {
+          tipo: "editar",
+          titulo: "Editar usuario",
+          usuarioID: row.id,
+          usuarioOcupacionSel: this.comboOcupacion.find(
+            (item) => item.id == row.ocupacion_id
+          ),
+          usuario: {
+            email: row.email,
+            nombres: row.nombres,
+            apellidos: row.apellidos,
+            puesto_actual: row.puesto_actual,
+            usuario: row.usuario,
+          },
+        };
+      }
     },
     guardar() {
       this.$validator.validateAll("form_registro").then((result) => {
+        console.log(this.modal.usuario);
         if (result) {
           axios
-            .post("api/grado/crear", this.modal.grado)
+            .post("api/usuario/crear", this.modal.usuario)
             .then((response) => {
               this.$toastr.s(response.data.message);
-              $("#modal-grado").modal("hide");
-              this.listarGrado();
-            })
-            .catch((error) => {
-              console.log(error);
-              this.$toastr.e(error.response.data.message);
-            });
-        }
-      });
-    },
-    guardarAgregarCurso() {
-      this.$validator.validateAll("form_registro_grado_curso").then((result) => {
-        if (result) {
-          axios
-            .post("api/grado_curso/crear", this.modalAgregar.grado)
-            .then((response) => {
-              this.$toastr.s(response.data.message);
-              this.listarGradoCurso(this.modalAgregar.grado.id_grado);
+              $("#modal-administrador").modal("hide");
+              this.listarCotizaciones();
             })
             .catch((error) => {
               console.log(error);
@@ -622,11 +708,14 @@ export default {
       this.$validator.validateAll("form_registro").then((result) => {
         if (result) {
           axios
-            .put("api/grado/modificar/" + this.modal.nivelID, this.modal.grado)
+            .put(
+              "api/usuario/modificar/" + this.modal.usuarioID,
+              this.modal.usuario
+            )
             .then((response) => {
               this.$toastr.s(response.data.message);
-              $("#modal-grado").modal("hide");
-              this.listarGrado();
+              $("#modal-administrador").modal("hide");
+              this.listarCotizaciones();
             })
             .catch((error) => {
               console.log(error);
@@ -635,42 +724,40 @@ export default {
         }
       });
     },
-    eliminar(row, index) {
-       this.$confirm("¿Esta seguro de eliminar el registro?").then(() => {
-                  //
-                   axios
-        .put("api/grado/eliminar/" + row.id)
-        .then((response) => {
-          this.$toastr.s(response.data.message);
-          row.activo = false;
-        })
-        .catch((error) => {
-          this.$toastr.e(error.response.data.message);
-        });
-      this.listarGrado();
-                });
-     
+    modificarUsuario() {
+      this.$validator.validateAll("form_registro_usuario").then((result) => {
+        if (result) {
+          axios
+            .put(
+              "api/usuario/modificar/" + this.modalUsuario.usuarioID,
+              this.modalUsuario.usuario
+            )
+            .then((response) => {
+              this.$toastr.s(response.data.message);
+              $("#modal-usuario").modal("hide");
+              this.listarCotizaciones();
+            })
+            .catch((error) => {
+              console.log(error);
+              this.$toastr.e(error.response.data.message);
+            });
+        }
+      });
     },
-     eliminarGradoCurso(row, index) {
-        this.$confirm("¿Esta seguro de eliminar el registro?").then(() => {
-                  //
-                  axios
-        .put("api/grado_curso/eliminar/" + row.id)
+    inactivar(row, index) {
+      axios
+        .put("api/usuario/inactivar/" + row.id)
         .then((response) => {
           this.$toastr.s(response.data.message);
-          row.activo = false;
-          this.listarGradoCurso(row.id_grado);
+          this.listarCotizaciones();
         })
         .catch((error) => {
           this.$toastr.e(error.response.data.message);
         });
-      this.listarGrado();
-                });
-      
     },
     activar(row, index) {
       axios
-        .put("api/grado/activar/" + row.id)
+        .put("api/usuario/activar/" + row.id)
         .then((response) => {
           this.$toastr.s(response.data.message);
           row.activo = true;
@@ -679,24 +766,62 @@ export default {
           this.$toastr.e(error.response.data.message);
         });
     },
-    listarContenidoPeligroso() {
-      this.listarGrados.filtrosBusqueda.contenidoPeligroso = true;
-      this.listarGrado();
+    enviarMensaje(row, index) {
+      this.$router.push({
+        name: "Mensajes",
+        params: {
+          usuario_id: row.id,
+          nombre: row.nombres + " " + row.apellidos,
+        },
+      });
     },
-    obtenerTipo(row) {
-      if (row.tipo == 1) return "Inicio";
-      else if (row.tipo == 2) return "Pregunta";
-      else if (row.tipo == 1) return "Publicación";
+    buscar(dni) {
+      console.log("dni", dni);
+      axios
+        .get("api/persona/buscar/" + dni)
+        .then((response) => {
+          if (!response.data || response.data == "") {
+            this.$toastr.w("La persona no se encuentra");
+            this.limpiarFormularioBuscar();
+            this.modal.tipo = "nuevo";
+          } else {
+            console.log(response.data);
+            this.modal.usuario.nombres = response.data.nombres;
+            this.modal.usuario.apellidos =
+              response.data.apellido_pat + " " + response.data.apellido_mat;
+
+            this.modal.usuario.id_per = response.data.id;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$toastr.e(error.response.data.message);
+        });
     },
     exportar() {
+      if (this.listaCotizaciones.filtrosBusqueda.fechaIni) {
+        this.listaCotizaciones.filtrosBusqueda.fechaIni;
+        this.listaCotizaciones.filtrosBusqueda.fechaFin;
+      }
+
       let url =
         process.env.MIX_APP_URL +
-        "/exportar/ocupaciones" +
-        Helper.getFilterURL(this.listarGrados.filtrosBusqueda);
+        "/exportar/usuarios" +
+        Helper.getFilterURL(this.listaCotizaciones.filtrosBusqueda);
       window.open(url);
     },
   },
 };
 </script>
 <style >
+.calendars > .ranges {
+  padding-left: 0%;
+  padding-right: 0%;
+  max-width: 23%;
+}
+.daterangepicker.show-calendar .ranges {
+  margin-top: 8px;
+  width: 23%;
+  max-width: 23%;
+}
 </style>

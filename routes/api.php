@@ -103,6 +103,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('listar', [CotizacionController::class, 'listar']);
     Route::post('publicar', [CotizacionController::class, 'publicar']);
     Route::get('listarOfertas/{id}', [CotizacionController::class, 'listarOfertas']);
+    Route::get('listarOfertasComparar/{id}', [CotizacionController::class, 'listarOfertasComparar']);
   });
   //Requermiento SIGA
   Route::group(['prefix' => 'requerimientoSiga'], function () {

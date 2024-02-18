@@ -104,77 +104,10 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-header p-0" id="headingThree">
-                            <h6 class="mb-0">
-                                <button class="btn btn-light w-100 text-left font-weight-bold p-menu collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree " style="font-size:20px;">
-                                    <i class="fa fa-child w-ico me-3"></i>Alumno
-                                </button>
-                            </h6>
-                            </div>
-                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                                <ul class="list-unstyled ps-0" style="font-size:20px;">
-
-                                    <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#" @click.prevent="redireccionar('Datos')">
-                                            <i class="fas fa-address-card me-3"></i>Información
-                                        </a>
-                                    </li>
-                                    <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Matricula')">
-                                            <i class="fas fa-edit me-3"></i>Matricula
-                                        </a>
-                                    </li>
-                                    <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Notas')">
-                                            <i class="fas fa-file-alt me-3"></i>Notas
-                                        </a>
-                                    </li>
-                                    <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Asistencia')">
-                                            <i class="fa fa-check-square me-3"></i>Asistencia
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header p-0" id="headingFour">
-                            <h6 class="mb-0">
-                                <button class="btn btn-light w-100 text-left font-weight-bold p-menu collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="font-size:20px;">
-                                    <i class="fa fa-chalkboard-teacher w-ico me-3"></i>Docente
-                                </button>
-                            </h6>
-                            </div>
-                            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
-                                <ul class="list-unstyled ps-0" style="font-size:20px;">
-                                    <li class="mb-1" >
-                                        <a class="nav-link" href="#" @click.prevent="redireccionar('InformacionDocente')">
-                                            <i class="fas fa-address-card me-3"></i>Información
-                                        </a>
-                                    </li>
-                                    <!-- <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#" @click.prevent="redireccionar('Usuarios')">
-                                            <i class="fa fa-calendar me-3"></i>Horario
-                                        </a>
-                                    </li> -->
-                                    <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Notas')">
-                                            <i class="fas fa-file-alt me-3"></i>Notas
-                                        </a>
-                                    </li>
-                                    <li class="mb-1" v-if="validarPermisos(1)">
-                                        <a class="nav-link" href="#"  @click.prevent="redireccionar('Asistencia')">
-                                            <i class="fa fa-check-square me-3"></i>Asistencia
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card">
                             <div class="card-header p-0" id="headingFive">
                             <h6 class="mb-0">
                                 <button class="btn btn-light w-100 text-left font-weight-bold p-menu collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="font-size:20px;">
-                                    <i class="fa fa-laptop w-ico me-3"></i>Campus Virtual
+                                    <i class="fa fa-laptop w-ico me-3"></i>Administracion
                                 </button>
                             </h6>
                             </div>
@@ -183,23 +116,23 @@
 
                                     <li class="mb-1" v-if="validarPermisos(1)">
                                         <a class="nav-link" href="#"  @click.prevent="redireccionar('Video')">
-                                            <i class="fa fa-file-video me-3"></i>Videos
+                                            <i class="fa fa-file-video me-3"></i>Proveedores
                                         </a>
                                     </li>
                                     <li class="mb-1" v-if="validarPermisos(1)">
                                         <a class="nav-link" href="#"  @click.prevent="redireccionar('Libro')">
-                                            <i class="fas fa-book me-3"></i>Libros
+                                            <i class="fas fa-book me-3"></i>Users
                                         </a>
                                     </li>
                                     <li class="mb-1" v-if="validarPermisos(1)">
                                         <a class="nav-link" href="#"  @click.prevent="redireccionar('SalaReunion')">
-                                        <i class="fa fa-users me-3"></i>Sala reunión
+                                        <i class="fa fa-users me-3"></i>Tabla Maestra
                                          </a>
                                      </li>
                                   
                                     <li class="mb-1" v-if="validarPermisos(1)">
                                         <a class="nav-link" href="#"  @click.prevent="redireccionar('Evaluacion')">
-                                            <i class="fas fa-pencil-alt me-3"></i>Evaluación
+                                            <i class="fas fa-pencil-alt me-3"></i>Roles
                                         </a>
                                     </li>
                                 </ul>
