@@ -18,7 +18,7 @@ class DetallePedidoSiga extends Model
         'id_pedido',
         'especificaciones',       
     ];
-    // public function pedidoSiga(){
-    //     return $this->belongsTo(PedidoSiga::class, 'id_pedido', 'id');
-    // }
+    public function detallePropuesta(){
+        return $this->hasMany(DetallePropuesta::class, 'descripcion', 'id');
+    }
 }

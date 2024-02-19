@@ -35,4 +35,7 @@ class CotizacionPropuesta extends Model
     public function proveedor(){
         return $this->belongsTo(Proveedor::class, 'id_proveedor', 'id');
     }
+    public function detallePropuesta(){
+        return $this->hasMany(detallePropuesta::class, 'id_propuesta', 'id');
+    } 
 }

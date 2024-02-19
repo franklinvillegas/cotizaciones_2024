@@ -7,6 +7,7 @@ use App\Models\Cotizacion;
 use App\Models\PublicacionCotizacion;
 use App\Models\DocumentoCotizacion;
 use App\Models\CotizacionPropuesta;
+use App\Models\DetallePropuesta;
 use Illuminate\Support\Facades\DB;
 
 
@@ -24,9 +25,15 @@ class CotizacionController extends Controller
       return $lista->get();
     }
     public function listarOfertasComparar($id){
-      $lista = PublicacionCotizacion::select()->with(['cotizacionPropuesta.proveedor'])->where('id',$id);
+      
+      try{
+      $lista = PublicacionCotizacion::select()->with(['cotizacion.pedidoSiga.detallePedidoSiga.detallePropuesta','cotizacionPropuesta.detallePropuesta','cotizacionPropuesta.proveedor'])->where('id',$id);
 
       return $lista->get();
+    }
+    catch (\Exception $e) {
+        return response()->json(['error' => 'Error al realizar la importación: ' . $e->getMessage()], 500);
+    }
     }
     
       public function publicar(Request $request){
