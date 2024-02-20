@@ -13,6 +13,7 @@ const store = new Vuex.Store({
             email: null,
             avatar: null,
             rol: null,
+            proveedor: null,
         },
         temporal: null,
         menuActivo:{

@@ -930,6 +930,8 @@ import Crypt from "../../services/Crypt";
             }
         },
         created(){
+          console.log()
+          this.proveedor = this.$store.getters.getAuthUser('proveedor');
            this.listarCotizaciones();
         },
         methods:{
@@ -1117,7 +1119,8 @@ import Crypt from "../../services/Crypt";
                           // apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
                           usuario: usuario.usuario,
                           avatar: usuario.avatar,
-                          rol: usuario.tipo_usuario
+                          rol: usuario.tipo_usuario,
+                          proveedor: usuario.id_proveedor
                       });
                       $("#modal-login").modal('hide');
                       console.log('deberia ingresar')

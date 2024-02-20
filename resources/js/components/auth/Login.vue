@@ -77,7 +77,8 @@ export default {
                         apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
                         usuario: usuario.usuario,
                         avatar: usuario.avatar,
-                        rol: usuario.tipo_usuario
+                        rol: usuario.tipo_usuario,
+                        proveedor: usuario.id_proveedor
                     });
                     this.$router.push('admin/inicio'); 
                 })
