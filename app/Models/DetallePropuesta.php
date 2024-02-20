@@ -21,7 +21,7 @@ class DetallePropuesta extends Model
 
     ];
 
-    public function cotizacion(){
-        return $this->belongsTo(cotizacionPropuesta::class, 'id_cotizacion', 'id');
-    }    
+    public function cotizacionPropuesta(){
+        return $this->belongsTo(cotizacionPropuesta::class, 'id_propuesta', 'id');
+    }  
 }

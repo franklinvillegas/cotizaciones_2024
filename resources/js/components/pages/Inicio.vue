@@ -131,7 +131,7 @@
                       </p>
                     </div>
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive" style="max-height: 500px;">
                     <vue-good-table
                       :columns="listarPedidosDetalle.columns"
                       :rows="listarPedidosDetalle.data"
@@ -252,7 +252,7 @@
                   align="center"
                   class="modal-title"
                   id="exampleModalLongTitle"
-                  v-text="modalDetalle.titulo"
+                  v-text="modalCotizar.titulo"
                 ></h5>
                 <button
                   type="button"
@@ -283,35 +283,35 @@
                     <div class="form-group col-2">
                       <p class="m-0">
                         <strong>Nro. Cons: </strong>
-                        <label v-text="modalDetalle.detalles.consolidado"></label>
+                        <label v-text="modalCotizar.cotizar.consolidado"></label>
                       </p>
                     </div>
                     <div class="form-group col-4">
                       <p class="m-0">
                         <strong>Fecha: </strong>
                         <label
-                          v-text="modalDetalle.detalles.fecha_pedido"
+                          v-text="modalCotizar.cotizar.fecha_pedido"
                         ></label>
                       </p>
                     </div>
                     <div class="form-group col-6">
                       <p class="m-0">
                         <strong>Documento Pedido: </strong>
-                        <label v-text="modalDetalle.detalles.nro_cmn"></label>
+                        <label v-text="modalCotizar.cotizar.nro_cmn"></label>
                       </p>
                     </div>
                     <div class="form-group col-12">
                       <p class="m-0">
                         <strong>CONCEPTO: </strong>
                         <label
-                          v-text="modalDetalle.detalles.descripcion"
+                          v-text="modalCotizar.cotizar.descripcion"
                         ></label>
                       </p>
                     </div>
                   </div>
                   <br />
                   <div class="row">
-                    <div class="form-group col-12">
+                    <div class="form-group col-12" v-show="modalCotizar.vista == 1">
                       <div class="form-group col-12">
                         <label class="m-0 form-group col-3">
                           <strong>Subir cotización: </strong>
@@ -373,15 +373,33 @@
                         />
                       </div>
                     </div>
-                    <div class="form-group col-12">
+                    <div class="form-group col-12" v-show="modalCotizar.vista == 2">
                       <div class="table-responsive">
                     <vue-good-table
-                      :columns="listarPedidosDetalle.columns"
-                      :rows="listarPedidosDetalle.data"
-                      :sort-options="{
+                      :columns="listarPedidosCotizar.columns"
+                      :rows="listarPedidosCotizar.data"
+                      :sort-options="{ 
                         enabled: false,
                       }"
+                      :pagination-options="{
+                          enabled: true,
+                          mode: 'pages',
+                          nextLabel: 'Sig',
+                          prevLabel: 'Ant',
+                          rowsPerPageLabel: 'Registros por página',
+                          ofLabel: 'de',
+                          pageLabel: 'Página', // for 'pages' mode
+                          allLabel: 'Todo',
+                      }"
                     >
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'precio_unitario_propuesta'" @change="changePrecio(props.row[props.column.field], props.column.field, props.row.originalIndex)">
+                            <input type="text" class="form-control" v-model="props.row.precio_unitario_propuesta">
+                        </span>
+                        <span v-else-if="props.column.field == 'precio_total'">
+                            {{ props.row.cantidad * (props.row.precio_unitario_propuesta ? props.row.precio_unitario_propuesta : 0)  }}
+                        </span>
+                    </template>
                     </vue-good-table>
                   </div>
                   <br />
@@ -395,8 +413,8 @@
                           data-vv-as=""
                           placeholder=""
                           name="total"
-                          v-model="modalDetalle.detalles.total"
-                          v-validate="'required'" disabled
+                          v-model="modalCotizar.cotizar.total"
+                          v-validate="'required'"
                         />
                       </div>
                       <div class="col-12 d-flex p-0">
@@ -410,8 +428,8 @@
                           data-vv-as=""
                           placeholder=""
                           name="forma_pago"
-                          v-model="modalDetalle.detalles.forma_pago"
-                          v-validate="'required'" disabled
+                          v-model="modalCotizar.cotizar.forma_pago"
+                          v-validate="'required'"
                           />
                         </div>
                         <div class="form-group col-6 d-flex">
@@ -424,8 +442,8 @@
                           data-vv-as=""
                           placeholder=""
                           name="garantia"
-                          v-model="modalDetalle.detalles.garantia"
-                          v-validate="'required'" disabled
+                          v-model="modalCotizar.cotizar.garantia"
+                          v-validate="'required'"
                           />
                         </div>
                       </div>
@@ -440,8 +458,8 @@
                           data-vv-as=""
                           placeholder=""
                           name="igv"
-                          v-model="modalDetalle.detalles.igv"
-                          v-validate="'required'" disabled
+                          v-model="modalCotizar.cotizar.igv"
+                          v-validate="'required'"
                           />
                         </div>
                         <div class="form-group col-6 d-flex">
@@ -454,8 +472,8 @@
                           data-vv-as=""
                           placeholder=""
                           name="plazo_entrega"
-                          v-model="modalDetalle.detalles.plazo_entrega"
-                          v-validate="'required'" disabled
+                          v-model="modalCotizar.cotizar.plazo_entrega"
+                          v-validate="'required'"
                           />
                         </div>
                       </div>
@@ -470,8 +488,8 @@
                           data-vv-as=""
                           placeholder=""
                           name="tipo_moneda"
-                          v-model="modalDetalle.detalles.tipo_moneda"
-                          v-validate="'required'" disabled
+                          v-model="modalCotizar.cotizar.tipo_moneda"
+                          v-validate="'required'"
                           />
                         </div>
                         <div class="form-group col-6 d-flex">
@@ -484,8 +502,8 @@
                           data-vv-as=""
                           placeholder=""
                           name="validez"
-                          v-model="modalDetalle.detalles.validez"
-                          v-validate="'required'" disabled
+                          v-model="modalCotizar.cotizar.validez"
+                          v-validate="'required'"
                           />
                         </div>
                       </div>
@@ -495,6 +513,9 @@
               </div>
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-primary" @click="guardarCotizacion">
+                {{ modalCotizar.vista == 1 ? 'Siguiente' : 'Finalizar' }}
+              </button>
               <button
                 type="button"
                 class="btn btn-outline-primary"
@@ -838,6 +859,24 @@ import Crypt from "../../services/Crypt";
                     },
                     deshabilitarEdicion: false,
                 },
+                listarPedidosCotizar: {
+                    data: [],
+                    columns: [
+                    { label: "Cantidad Requerida", field: "cantidad" },
+                    { label: "Unidad de Medida", field: "unidad_medida" },
+                    { label: "Descripcion", field: "descripcion" },
+                    { label: "Precio Unitario", field: "precio_unitario_propuesta" },
+                    { label: "Precio Total", field: "precio_total" },
+                    ],
+                    total: 0,
+                    filtrosBusqueda: {
+                    tipo: "",
+                    orden: "asc",
+                    ordenPor: "id",
+                    regPagina: "10",
+                    },
+                    deshabilitarEdicion: false,
+                },
                 desabilitado: false,
                 botonesActive: {
                     todos: true,
@@ -851,11 +890,24 @@ import Crypt from "../../services/Crypt";
                     titulo: "",
                     nivelID: null,
                     detalles: {
-                    id: "",
-                    nro_cmn: "",
-                    descripcion: "",
+                      id: "",
+                      nro_cmn: "",
+                      descripcion: "",
+                      tipo: "",
+                      options: "",
+                    },
+                },
+                modalCotizar: {
                     tipo: "",
-                    options: "",
+                    titulo: "",
+                    vista: 1,
+                    cotizar: {
+                      id: "",
+                      nro_cmn: "",
+                      consolidado: "",
+                      descripcion: "",
+                      tipo: "",
+                      options: "",
                     },
                 },
                 modalLogin: {
@@ -904,14 +956,14 @@ import Crypt from "../../services/Crypt";
                     titulo: "Solicitud de Cotización",
                     tipo: "ver",
                     detalles: {
-                    id: response.data[0].id,
-                    nro_cmn: response.data[0].nro_cmn,
-                    fecha_pedido: response.data[0].fecha_pedido,
-                    descripcion: response.data[0].descripcion,
-                    ano_eje: response.data[0].ano_eje,
-                    tipo: response.data[0].tipo,
-                    estado: response.data[0].estado,
-                    consolidado: response.data[0].consolidado,
+                    id: row.id,
+                    nro_cmn: row.pedido_siga.nro_cmn,
+                    fecha_pedido: row.pedido_siga.fecha_pedido,
+                    descripcion: row.pedido_siga.descripcion,
+                    ano_eje: row.ano_eje,
+                    tipo: row.pedido_siga.tipo,
+                    consolidado: row.pedido_siga.consolidado,
+                    estado: row.estado,
                     nro_cotizacion: row.nro_cotizacion,
                     fecha_publicacion: row.publicacion_cotizacion?.fecha_publicacion,
                     fecha_fin: row.publicacion_cotizacion?.fecha_fin,
@@ -960,42 +1012,90 @@ import Crypt from "../../services/Crypt";
                     deshabilitado: true,
                 };
               } else {
-                console.log('está autenticado')
-                console.log('row', row)
+                axios
+                .get("api/cotizacionPropuesta/listarPropuestaUser/" + row.publicacion_cotizacion.id)
+                .then((response) => {
+                  console.log('entra a repsonse');
+                console.log(response.data);
                 $("#modal-cotizar").modal("show");
                 this.limpiarFormulario();
-                axios
-                .get("api/pedidoSigaPublicar/listarImprimir/" + row.pedido_siga.id)
-                .then((response) => {
-                console.log(response.data);
-                this.listarPedidosDetalle.data = response.data[0].detalle_pedido_siga;
-                this.modalDetalle = {
-                    titulo: "Solicitud de Cotización",
+
+                response.data[0].detalle_pedido_siga = response.data[0].cotizacion.pedido_siga.detalle_pedido_siga.map((e) => { e.precio_unitario_propuesta = ''; return e;} )
+                this.listarPedidosCotizar.data = response.data[0].detalle_pedido_siga;
+                this.modalCotizar = {
+                    titulo: "Sistema de cotización",
                     tipo: "ver",
-                    detalles: {
-                    id: response.data[0].id,
-                    nro_cmn: response.data[0].nro_cmn,
-                    fecha_pedido: response.data[0].fecha_pedido,
-                    descripcion: response.data[0].descripcion,
-                    ano_eje: response.data[0].ano_eje,
-                    tipo: response.data[0].tipo,
-                    estado: response.data[0].estado,
-                    consolidado: response.data[0].consolidado,
-                    nro_cotizacion: row.nro_cotizacion,
-                    fecha_publicacion: row.publicacion_cotizacion?.fecha_publicacion,
-                    fecha_fin: row.publicacion_cotizacion?.fecha_fin,
-                    descripcion2: row.pedido_siga.descripcion,
-                    documento: row.publicacion_cotizacion?.documento_cotizacion[0]?.url_documento,
-                    eett: row.publicacion_cotizacion?.documento_cotizacion[1]?.url_documento,
+                    vista: 1,
+                    cotizar: {
+                      id: row.id,
+                      nro_cmn: row.pedido_siga.nro_cmn,
+                      fecha_pedido: row.pedido_siga.fecha_pedido,
+                      descripcion: row.pedido_siga.descripcion,
+                      ano_eje: row.ano_eje,
+                      estado: row.estado,
+                      garantia: '',
+                      igv: '',
+                      forma_pago: '',
+                      tipo_moneda: '',
+                      plazo_entrega: '',
+                      validez: '',
+                      total: '',
+                      id_publicacion:  row.publicacion_cotizacion.id,
+                      id_proveedor:1
                     },
                     deshabilitado: true,
                 };
                 })
                 .catch((error) => {
-                console.log(error);
-                this.$toastr.e(error.response.data.message);
+                this.$toastr.w(error.response.data.error);
                 });
               }
+            },
+
+            guardarCotizacion(){
+              if(this.modalCotizar.vista == 1){
+                this.modalCotizar.vista = 2;
+              } else if(this.modalCotizar.vista == 2 ){
+
+                let _this = this;
+                let data = new FormData();
+                data.append('cotizacion_archivo', document.getElementById('cotizacion_archivo').files[0]);
+                data.append('cotizacion_ficharuc', document.getElementById('cotizacion_ficharuc').files[0]);
+                data.append('cotizacion_rnp', document.getElementById('cotizacion_rnp').files[0]);
+                data.append('cotizacion_cci', document.getElementById('cotizacion_cci').files[0]);
+                data.append('cotizacion_anexo', document.getElementById('cotizacion_anexo').files[0]);
+                data.append('estado',_this.modalCotizar.cotizar.estado);
+                data.append('garantia',_this.modalCotizar.cotizar.garantia);
+                data.append('igv',_this.modalCotizar.cotizar.igv);
+                data.append('forma_pago',_this.modalCotizar.cotizar.forma_pago);
+                data.append('tipo_moneda',_this.modalCotizar.cotizar.tipo_moneda);
+                data.append('plazo_entrega',_this.modalCotizar.cotizar.plazo_entrega);
+                data.append('validez',_this.modalCotizar.cotizar.validez);
+                data.append('total',_this.modalCotizar.cotizar.total);
+                data.append('id_publicacion',_this.modalCotizar.cotizar.id_publicacion);
+                data.append('id_proveedor',_this.modalCotizar.cotizar.id_proveedor);
+                data.append('detalle_propuesta',JSON.stringify(_this.listarPedidosCotizar.data));
+                console.log('detalle propuesta',_this.listarPedidosCotizar.data);
+
+                axios
+                  .post("api/cotizacionPropuesta/crear",data)
+                  .then((response) => {
+                    this.$toastr.s(response.data.message);
+                    $("#modal-cotizar").modal("hide");
+                    document.getElementById('cotizacion_archivo').value='';
+                    document.getElementById('cotizacion_ficharuc').value='';
+                    document.getElementById('cotizacion_rnp').value='';
+                    document.getElementById('cotizacion_cci').value='';
+                    document.getElementById('cotizacion_anexo').value='';
+                  })
+                  .catch((error) => {
+                    this.$toastr.e(error.response.data.message);
+                  });
+              }
+            },
+
+            changePrecio(changedData, column, row) {
+            this.listarPedidosCotizar.data[row][column] = changedData
             },
 
             acceder(){
@@ -1011,8 +1111,8 @@ import Crypt from "../../services/Crypt";
                       this.$store.dispatch('setAuthUserDetail',{//aqui extrae la info el usuario y lo asigno a la variable
                           identificador: Crypt.encrypt(usuario.id),
                           email: usuario.email,
-                          nombres: usuario.persona.nombres,
-                          apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
+                          // nombres: usuario.persona.nombres,
+                          // apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
                           usuario: usuario.usuario,
                           avatar: usuario.avatar,
                           rol: usuario.tipo_usuario

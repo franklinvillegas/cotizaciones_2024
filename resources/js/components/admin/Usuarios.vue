@@ -127,9 +127,8 @@
                                     </p>
                                     <select name="tipo_usuario" v-model="modal.usuario.tipo_usuario" class="form-control">
                                         <option value="">--Seleccione--</option>
-                                        <option value="1">Administrador</option>
-                                        <option value="2">Docente</option>
-                                        <option value="3">Alumno</option>
+                                        <option value="1">Persona</option>
+                                        <option value="2">Proveedor</option>
                                     </select>
                                     <span class="text-danger">{{errors.first("form_registro.tipo_usuario")}}</span>
                                 </div>  

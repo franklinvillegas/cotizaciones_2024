@@ -69,8 +69,8 @@ export default {
                         identificador: Crypt.encrypt(usuario.id),
                         //rol: Crypt.encrypt(usuario.id_rol),
                         email: usuario.email,
-                        nombres: usuario.persona.nombres,
-                        apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
+                        // nombres: usuario.persona.nombres,
+                        // apellidos: usuario.persona.apellido_pat+' '+usuario.persona.apellido_mat,
                         usuario: usuario.usuario,
                         avatar: usuario.avatar,
                         rol: usuario.tipo_usuario

@@ -11,8 +11,8 @@ use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\PedidoSigaController;
 use App\Http\Controllers\DetallePedidoSigaController;
 use App\Http\Controllers\RequerimientoSigaController;
-
 use App\Http\Controllers\CotizacionController;
+use App\Http\Controllers\CotizacionPropuestaController;
 
 
 
@@ -105,10 +105,17 @@ Route::middleware('auth:api')->group(function () {
     Route::get('listarOfertas/{id}', [CotizacionController::class, 'listarOfertas']);
     Route::get('listarOfertasComparar/{id}', [CotizacionController::class, 'listarOfertasComparar']);
   });
+
   //Requermiento SIGA
   Route::group(['prefix' => 'requerimientoSiga'], function () {
     Route::get('listar', [RequerimientoSigaController::class, 'listar']);
     Route::get('listarDetalle/{ano_eje}/{nro_cmn}', [RequerimientoSigaController::class, 'listarDetalle']);
+  });
+
+   // CotizacionPropuesta
+   Route::group(['prefix' => 'cotizacionPropuesta'], function () {
+    Route::post('crear', [CotizacionPropuestaController::class, 'crear']);
+    Route::get('listarPropuestaUser/{id}', [CotizacionPropuestaController::class, 'listarPropuestaUser']);
   });
 
   //extrasss
