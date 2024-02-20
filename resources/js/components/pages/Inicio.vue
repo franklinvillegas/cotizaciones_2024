@@ -926,6 +926,7 @@ import Crypt from "../../services/Crypt";
                 ocupacionesSel: null,
                 rowSelect:'',
                 indexSelect:'',
+                proveedor:'',
             }
         },
         created(){
@@ -1041,7 +1042,7 @@ import Crypt from "../../services/Crypt";
                       validez: '',
                       total: '',
                       id_publicacion:  row.publicacion_cotizacion.id,
-                      id_proveedor:1
+                      id_proveedor:this.proveedor
                     },
                     deshabilitado: true,
                 };
@@ -1106,8 +1107,9 @@ import Crypt from "../../services/Crypt";
                   axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token_laravel");
                   axios.get("api/auth/user")
                   .then((response) => {
-                      console.log(response);
+                      console.log('usuario',response);
                       let usuario = response.data;
+                      this.proveedor = usuario.id_proveedor;
                       this.$store.dispatch('setAuthUserDetail',{//aqui extrae la info el usuario y lo asigno a la variable
                           identificador: Crypt.encrypt(usuario.id),
                           email: usuario.email,
